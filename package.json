@@ -38,7 +38,7 @@
     "method-override": "^3.0.0",
     "multer": "^1.4.4",
     "nodemailer": "^6.7.5",
-    "nodemon": "^2.0.4",
+    "nodemon": "^2.0.19",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
     "pdf-lib": "^1.17.1",
@@ -61,7 +61,7 @@
   },
   "bin": "server.js",
   "scripts": {
-    "build": "(if exist G:\\projects\\sd\\sd27May22\\srv\build rmdir G:\\projects\\sd\\sd27May22\\srv\\build /s /q)  && cd G:\\projects\\sd\\sd27May22\\client && npm run build && xcopy build\\*.* G:\\projects\\sd\\sd27May22\\srv\\build\\ /E /K /D /H /Y && cd G:\\projects\\sd\\sd27May22\\srv && npm start",
+    "build": "powershell .\\AutoBuild.ps1",
     "start": "nodemon server.js",
     "build-exe": "pkg . --targets node14-win-x64"
   }
