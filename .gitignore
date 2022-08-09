@@ -126,4 +126,9 @@ dist
 =======
 yarn-error.log*
 >>>>>>> parent of 170a14f (gitignore modified)
+<<<<<<< HEAD
 >>>>>>> 4280b64 (Revert "gitignore modified")
+=======
+
+.gitignore
+>>>>>>> e439d16 (gitignore)
