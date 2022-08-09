@@ -22,3 +22,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 build/asset-manifest.json
+=======
+yarn-error.log*
+>>>>>>> parent of 170a14f (gitignore modified)
