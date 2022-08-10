@@ -10,7 +10,7 @@
 
 # production
 /build
-
+build/*
 # misc
 .DS_Store
 .env.local
@@ -29,3 +29,4 @@ yarn-error.log*
 >>>>>>> parent of 170a14f (gitignore modified)
 
 .gitignore
+
