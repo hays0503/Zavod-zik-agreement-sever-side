@@ -33,3 +33,5 @@ yarn-error.log*
 
 build/index.html
 .gitignore
+build/index.html
+build/asset-manifest.json
