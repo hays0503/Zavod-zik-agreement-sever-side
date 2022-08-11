@@ -36,3 +36,6 @@ build/index.html
 build/index.html
 build/asset-manifest.json
 uploads/sanct.log
+build/index.html
+build/asset-manifest.json
+.gitignore
