@@ -25,7 +25,7 @@ const constants = {
         path: '/graphql'
     },
     guard: {
-        port: 9997,
+        port: 9988,
         path: '/sd/d037b3b1d204fda81bca6cf1b3cceb50'
     },
     wss: {
