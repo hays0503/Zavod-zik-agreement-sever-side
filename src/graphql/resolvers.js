@@ -256,7 +256,6 @@ const resolvers = {
             return { type: 'success', message: 'Успешно создано!' };
         },
         updateUser: async (parent, args) => {
-            console.log('user',args)
             const password = args.user.password === '' ? '' : await bcryptjs.hash(args.user.password, 10);
             await client.query(`SELECT * FROM user_update('${JSON.stringify({ ...args.user, password })}')`);
             publish('users', client);
@@ -304,7 +303,6 @@ const resolvers = {
         },
         // -----Documents Tasks -------
         insertDocumentTasks: async (parent, args) => {
-            console.log('ARGS BACK-----------------',args)
             await client.query(`SELECT * FROM document_tasks_insert('${JSON.stringify(args.document_tasks)}')`);
             publish('document_tasks', client);
             return { type: 'success', message: 'Успешно создано' };
@@ -316,14 +314,12 @@ const resolvers = {
         },
         // -----Documents mutatuions-----
         insertDocument: async (parent, args) => {
-            console.log('document args',args);
             await client.query(`SELECT * FROM document_insert('${JSON.stringify(args.document)}')`);
             publish('documents', client);
             publish('document_logs', client);
             return { type: 'success', message: 'Успешно создано' };
         },
         updateDocument: async (parent, args) => {
-            console.log(args.document)
             await client.query(`SELECT * FROM document_update('${JSON.stringify(args.document)}')`)
             publish('documents', client);
             publish('document_logs', client);
@@ -335,14 +331,12 @@ const resolvers = {
             return { type: 'success', message: 'Успешно удалено!' };
         },
         setIsReadTrue: async (parent, args) => {
-            console.log('args',args)
             await client.query(`SELECT * FROM document_set_is_read_true('${JSON.stringify(args.document)}')`)
             publish('documents', client);
             publish('document_logs', client);
             return {}
         },
         setTaskIsReadTrue: async(parent,args) =>{
-            console.log('args',args)
             await client.query(`SELECT * FROM  document_tasks_set_is_read_true('${JSON.stringify(args.task)}')`)
             publish('tasks', client);
             publish('document_tasks_logs', client);
@@ -350,7 +344,6 @@ const resolvers = {
         },
         // -----Comments mutatuions-----
         insertComment: async (parent, args) => {
-            console.log(args);
             await client.query(`SELECT * FROM document_comment_insert('${JSON.stringify(args.comment)}')`);
             publish('document_comments', client);
             return { type: 'success', message: 'Успешно создано' };
