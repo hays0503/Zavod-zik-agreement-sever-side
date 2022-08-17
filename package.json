@@ -28,6 +28,7 @@
     "express-graphql": "^0.11.0",
     "express-session": "^1.17.1",
     "express-ws": "^4.0.0",
+    "file-saver": "^2.0.5",
     "graphql": "^15.4.0",
     "graphql-subscriptions": "^1.1.0",
     "graphql-tools": "^6.2.3",
