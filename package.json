@@ -63,6 +63,7 @@
   "scripts": {
     "build": "powershell .\\AutoBuild.ps1",
     "start": "nodemon server.js",
+    "start-build": "nodemon powershell .\\AutoBuild.ps1",
     "build-exe": "pkg . --targets node14-win-x64"
   }
 }
