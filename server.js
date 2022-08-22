@@ -184,7 +184,6 @@ emailPgClient.on('notification', async (data) => {
 let filePgClient = new pg.Client(connectionString);
 filePgClient.connect();
 app.post('/api/files', (req, res, next) => {
-    console.log('req.body files',req.body)
     filePgClient.query( `SELECT id, filename, data_file FROM document_files WHERE id = ${req.body.item}`, (err, result) => {
         if (err) {
             return console.error('error head reply pg query:', err);
@@ -202,7 +201,6 @@ app.post('/api/files', (req, res, next) => {
 
 //file downloads from browser(Скачивания файлов из таблиц по поручениям)
 app.post('/api/tasks_files', (req, res, next) => {
-    console.log('req.body files',req.body)
     filePgClient.query( `SELECT id, filename, data_file FROM document_tasks_files WHERE id = ${req.body.item}`, (err, result) => {
         if (err) {
             return console.error('error head reply pg query:', err);
@@ -312,10 +310,8 @@ app.post("/get-file", async (req, res) => {
     const writeFilePromise = promisify(writeFile);
 
     let client = require("./config/pgConfig")
-    console.log(req.body)
     let id = req.body.id
     let result = await client.query(`SELECT * FROM document_files WHERE id = ${id}`)
-    console.log(result.rows[0]);
 
     res.json({ result: result.rows[0] })
 })
@@ -326,10 +322,8 @@ app.post("/get-tasks-file", async (req, res) => {
     const writeFilePromise = promisify(writeFile);
 
     let client = require("./config/pgConfig")
-    console.log(req.body)
     let id = req.body.id
     let result = await client.query(`SELECT * FROM document_tasks_files WHERE id = ${id}`)
-    console.log(result.rows[0]);
 
     res.json({ result: result.rows[0] })
 })
