@@ -202,7 +202,6 @@ app.post('/api/files', (req, res, next) => {
 
 //file downloads from browser(Скачивания файлов из таблиц по поручениям)
 app.post('/api/tasks_files', (req, res, next) => {
-    console.log('req.body files',req.body)
     filePgClient.query( `SELECT id, filename, data_file FROM document_tasks_files WHERE id = ${req.body.item}`, (err, result) => {
         if (err) {
             return console.error('error head reply pg query:', err);
@@ -210,7 +209,6 @@ app.post('/api/tasks_files', (req, res, next) => {
         //console.log("result.rows[0].id",result.rows[0].id)
         let temp = {filename:result.rows[0].filename, type:'file_open', data:`${result.rows[0].data_file.substr(result.rows[0].data_file.lastIndexOf(',')+1)}`}
         sdServerWSConfig.connect.clients.forEach(async function each(ws) {
-            console.log('filename', result.rows[0].filename, req.body.user, ws.id)
             if (req.body.user==ws.id)
             ws.send(JSON.stringify(temp))
         });
@@ -312,11 +310,8 @@ app.post("/get-file", async (req, res) => {
     const writeFilePromise = promisify(writeFile);
 
     let client = require("./config/pgConfig")
-    console.log(req.body)
     let id = req.body.id
     let result = await client.query(`SELECT * FROM document_files WHERE id = ${id}`)
-    console.log(result.rows[0]);
-
     res.json({ result: result.rows[0] })
 })
 
@@ -326,11 +321,8 @@ app.post("/get-tasks-file", async (req, res) => {
     const writeFilePromise = promisify(writeFile);
 
     let client = require("./config/pgConfig")
-    console.log(req.body)
     let id = req.body.id
     let result = await client.query(`SELECT * FROM document_tasks_files WHERE id = ${id}`)
-    console.log(result.rows[0]);
-
     res.json({ result: result.rows[0] })
 })
 
