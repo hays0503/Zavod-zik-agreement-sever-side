@@ -184,7 +184,6 @@ emailPgClient.on('notification', async (data) => {
 let filePgClient = new pg.Client(connectionString);
 filePgClient.connect();
 app.post('/api/files', (req, res, next) => {
-    console.log('req.body files',req.body)
     filePgClient.query( `SELECT id, filename, data_file FROM document_files WHERE id = ${req.body.item}`, (err, result) => {
         if (err) {
             return console.error('error head reply pg query:', err);
