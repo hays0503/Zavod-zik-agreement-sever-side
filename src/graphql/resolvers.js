@@ -161,19 +161,6 @@ const resolvers = {
             return res.rows;
         },
 
-        /*comments: async (parent, args)=> {
-            //console.log(args);
-            let sql = `
-                SELECT
-                    *
-                FROM
-                    document_comments
-                WHERE document_id = ${args.comments.document_id}
-            `
-            let res = await client.query(sql)
-            return res.rows
-        },
-        */
         document_comments: async (parent, args, context) => {
             //console.log('query comments args', args)
             //console.log('query comments conxtext variables', context.body.variables)
@@ -209,6 +196,28 @@ const resolvers = {
             `
             let res = await client.query(sql)
             // console.log(res.rows)
+            return res.rows
+        },
+
+        task_files: async (parent, args) => {
+
+            let sql = `
+            (
+                select filename, data_file
+                    from document_files
+                        where document_id = ${args.id}
+                )
+                union all
+                (
+                SELECT filename, data_file
+                    FROM public.document_tasks_files
+                        WHERE task_id in  (select id 
+                                                FROM public.document_tasks 
+                                                    WHERE document_id=${args.id}) and is_add_to_document=true
+                )
+            `
+            let res = await client.query(sql)
+            console.log(sql)
             return res.rows
         },
 

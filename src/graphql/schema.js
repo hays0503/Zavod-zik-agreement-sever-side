@@ -161,6 +161,7 @@ let typeDefs = gql`
         filename: String
         data_file: String
         task_id: Bigint
+        is_add_to_document: Boolean
     }
     type DataCustom{
         id:ID
@@ -261,6 +262,7 @@ let typeDefs = gql`
         document_logs(document_logs: JSON) : [DocumentLogs]
         document_tasks_logs(document_tasks_logs: JSON) : [DocumentTasksLogs]
         document_tasks_files(document_tasks_files: JSON) : [DocumentTasksFiles]
+        task_files(id:Bigint): [Files]
         date_one(data_one: JSON) : [DataOne]
         data_agreement_list(data_agreement_list: JSON): [DataAgreementList]
         data_agreement_list_production(data_agreement_list_production:JSON):[DataAgreementListProduction]

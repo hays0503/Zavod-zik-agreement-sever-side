@@ -215,6 +215,20 @@ app.post('/api/tasks_files', (req, res, next) => {
 });
 
 
+app.post('/api/tasks_files_is_add_to_document', async (req, res, next) => {
+    let client = require("./config/pgConfig")
+    let id = req.body.item
+    let result = await client.query( `SELECT id, filename
+	FROM public.document_tasks_files
+		WHERE task_id in  (select id 
+								FROM public.document_tasks 
+									WHERE document_id=${req.body.item}) and is_add_to_document=true`)
+    console.log(result)
+    res.json({ result: result.rows })
+
+});
+
+
 /*app.post('/api/notifications', (req, res, next) => {
     sendPopEmail(req.body.address)
     let temp = {type:'notification'}
@@ -306,7 +320,7 @@ app.post("/document-control/for-execution-inbox", function (req, res, next) {
 app.post("/get-file", async (req, res) => {
     const { writeFile } = require('fs');
     const { promisify } = require('util');
-    const writeFilePromise = promisify(writeFile);
+
 
     let client = require("./config/pgConfig")
     let id = req.body.id
@@ -317,7 +331,7 @@ app.post("/get-file", async (req, res) => {
 app.post("/get-tasks-file", async (req, res) => {
     const { writeFile } = require('fs');
     const { promisify } = require('util');
-    const writeFilePromise = promisify(writeFile);
+
 
     let client = require("./config/pgConfig")
     let id = req.body.id

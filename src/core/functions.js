@@ -123,10 +123,11 @@ let queryParseJson = ({ query, variables, tables }) => {
                 }
             }
         }
-
         return { fields, WHERE };
-        //return fields;
     };
+
+
+
     let queryParse = ({ fields, variables, subscriptionName }) => {
         let subQuery = 0;
 
