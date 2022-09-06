@@ -1,4 +1,4 @@
-const { gql } = require('apollo-server-express');
+const { gql } = require("apollo-server-express");
 
 let typeDefs = gql`
     scalar JSON
@@ -318,6 +318,8 @@ let typeDefs = gql`
         deletePosition(positions: JSON) : Status
 
         deleteFile(document_files:JSON):Status
+
+        set_is_add_to_document(ID: Int,state: Boolean):Status
     }
     type Subscription {
         authMe(test: JSON): [User]
