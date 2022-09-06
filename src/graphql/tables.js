@@ -144,6 +144,32 @@ const tables = {
             "task_for_document":"id in(select document_id from document_tasks where user_id_receiver=$*$)"
         }
     },
+    "departament_dictionary":{
+        "fields":{
+            "id":"bigint",
+            "departament_name":"character varying"
+        },
+        "where":{
+            "id":"id $*$",
+            "departament_name":"departament_name $*$"
+        }
+    },
+    "departament_relationship":{
+        "fields":{
+            "id_user":"bigint",
+            "id_departament":"bigint",
+            "is_boss":"boolean",
+            "is_vice_director":"boolean",
+            "is_user":"boolean"
+        },
+        "where":{
+            "id_user":"id_user $*$",
+            "id_departament":"id_departament $*$",
+            "is_boss":"is_boss $*$",
+            "is_vice_director":"is_vice_director $*$",
+            "is_user":"is_user $*$"
+        }
+    },
     //"documents_for_receiver":"id in(select document_id from document_tasks where user_id_receiver=$*$) and exists(select id from document_tasks where user_id_receiver=$*$)"
     "document_tasks":{
         "fields":{

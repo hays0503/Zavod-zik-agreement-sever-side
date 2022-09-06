@@ -222,6 +222,19 @@ let typeDefs = gql`
         date: DateTime
     }
 
+    type DepartamentDictionary{
+        id: ID
+        departament_name: String
+    }
+
+    type DepartamentRelationship{
+        id_user: Bigint
+        id_departament: Bigint
+        is_boss: Boolean
+        is_vice_director: Boolean
+        is_user: Boolean
+    }
+
     type Signatures {
         id: ID
         document_id: Bigint
@@ -259,6 +272,10 @@ let typeDefs = gql`
         document_statuses(document_statuses: JSON): [DocumentStatuses]
         document_routes(document_routes: JSON) : [DocumentRoutes]
         forms(forms: JSON): [Forms]
+
+        departament_relationship(departament_relationship: JSON):[DepartamentRelationship]
+        departament_dictionary(departament_dictionary: JSON):[DepartamentDictionary]
+
         document_logs(document_logs: JSON) : [DocumentLogs]
         document_tasks_logs(document_tasks_logs: JSON) : [DocumentTasksLogs]
         document_tasks_files(document_tasks_files: JSON) : [DocumentTasksFiles]

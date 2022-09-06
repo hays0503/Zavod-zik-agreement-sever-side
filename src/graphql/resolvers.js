@@ -154,6 +154,24 @@ const resolvers = {
 			const res = await client.query(dbQuery.documents);
 			return res.rows;
 		},
+		departament_dictionary: async (parent, args, context) => {
+			let [dbQuery] = queryParseJson({
+				query: context.body.query,
+				variables: args ? args : context.body.variables,
+				tables,
+			});
+			const res = await client.query(dbQuery.departament_dictionary);
+			return res.rows;
+		},
+		departament_relationship: async (parent, args, context) => {
+			let [dbQuery] = queryParseJson({
+				query: context.body.query,
+				variables: args ? args : context.body.variables,
+				tables,
+			});
+			const res = await client.query(dbQuery.departament_relationship);
+			return res.rows;
+		},
 
 		document_statuses: async (parent, args, context) => {
 			let [dbQuery] = queryParseJson({
