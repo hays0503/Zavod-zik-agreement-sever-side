@@ -43,3 +43,5 @@ build/asset-manifest.json
 build/index.html
 build/index.html
 build/index.html
+AutoBuild.ps1
+.gitignore
