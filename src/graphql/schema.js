@@ -233,6 +233,8 @@ let typeDefs = gql`
         is_boss: Boolean
         is_vice_director: Boolean
         is_user: Boolean
+        user: User
+        departament: DepartamentDictionary
     }
 
     type Signatures {
