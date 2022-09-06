@@ -162,7 +162,7 @@ const tables = {
             "is_vice_director":"boolean",
             "is_user":"boolean",
             "user":"(SELECT row_to_json(j.*) AS id_user FROM (SELECT $*$ FROM users AS $Q++$ WHERE id = $Q$.id_user) as j) as user",
-            "departament":"(SELECT row_to_json(j.*) AS id_departament FROM (SELECT $*$ FROM departament_dictionary AS $Q++$ WHERE id = $Q$.id_departament) as j) as departament"
+            "departament":"(SELECT row_to_json(j.*) AS id_departament FROM (SELECT $*$ FROM departament_dictionary AS $Q++$ WHERE id = $Q$.id_departament) as j)"
         },
         "where":{
             "id_user":"id_user $*$",
