@@ -10,7 +10,8 @@ const tables = {
             "positions": "json",
             "domain_username": "character varying",
             "fio": "character varying",
-            "email": "character varying"
+            "email": "character varying",
+            'departament_relationship':'(SELECT row_to_json(j.*) AS departament_relationship FROM (SELECT $*$ FROM departament_relationship AS $Q++$ WHERE id_user = $Q$.id) as j)'
         },
         "where": {
             "id": "id $*$",
@@ -162,7 +163,7 @@ const tables = {
             "is_vice_director":"boolean",
             "is_user":"boolean",
             "user":"(SELECT row_to_json(j.*) AS id_user FROM (SELECT $*$ FROM users AS $Q++$ WHERE id = $Q$.id_user) as j) as user",
-            "departament":"(SELECT row_to_json(j.*) AS id_departament FROM (SELECT $*$ FROM departament_dictionary AS $Q++$ WHERE id = $Q$.id_departament) as j) as departament"
+            "departament":"(SELECT row_to_json(j.*) AS departament FROM (SELECT $*$ FROM departament_dictionary AS $Q++$ WHERE id = $Q$.id_departament) as j)"
         },
         "where":{
             "id_user":"id_user $*$",

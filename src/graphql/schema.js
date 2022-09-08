@@ -27,6 +27,7 @@ let typeDefs = gql`
         domain_username: String
         fio: String
         email: String
+        departament_relationship: DepartamentRelationship
     }
 
     type Position {
