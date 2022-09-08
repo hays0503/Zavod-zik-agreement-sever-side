@@ -289,6 +289,8 @@ let typeDefs = gql`
         data_agreement_list_internal_needs(data_agreement_list_internal_needs: JSON):[DataAgreementListInternalNeeds]
         data_custom(data_custom: JSON):[DataCustom]
         document_tasks(document_tasks: JSON):[DocumentTasks]
+
+        get_boss_depart(users:JSON): [User]
     }
     type Mutation {
         login(user: JSON): User

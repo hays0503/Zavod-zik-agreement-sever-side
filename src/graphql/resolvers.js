@@ -270,6 +270,36 @@ const resolvers = {
 			return res.rows;
 		},
 
+		get_boss_depart: async (parent, args) => {
+			console.log(args)
+			let sql = `
+            (
+                select
+				id,
+				username,
+				"admin",
+				accesses,
+				auth_type,
+				positions,
+				domain_username,
+				fio,
+				email
+					FROM users
+				WHERE id=  (
+							SELECT id_user
+							FROM 
+							departament_relationship
+							WHERE is_boss=true and id_departament = (
+																		SELECT id_departament
+																		FROM departament_relationship
+																		WHERE id_user${args.users.global.id})
+																	)
+            )
+            `;
+			let res = await client.query(sql);
+			return res.rows;
+		},
+
 		task_files: async (parent, args) => {
 			let sql = `
             (
@@ -287,7 +317,6 @@ const resolvers = {
                 )
             `;
 			let res = await client.query(sql);
-			console.log(sql);
 			return res.rows;
 		},
 
