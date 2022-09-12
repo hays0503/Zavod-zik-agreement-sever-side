@@ -8,6 +8,12 @@ const tables = {
             "role_id": "bigint",
             "accesses": "json",
             "positions": "json",
+            "position_info":`(SELECT row_to_json(j.*) 
+                                AS position_info 
+                                FROM 
+                            (SELECT $*$ 
+                                FROM positions AS $Q++$ 
+                                WHERE id = $Q$.positions->>0) as j)`,
             "domain_username": "character varying",
             "fio": "character varying",
             "email": "character varying",

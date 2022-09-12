@@ -22,6 +22,7 @@ let typeDefs = gql`
         role_id: Bigint
         accesses: JSON
         positions: JSON
+        position_info: Position
         position_names: JSON
         position_accesses: JSON
         domain_username: String
