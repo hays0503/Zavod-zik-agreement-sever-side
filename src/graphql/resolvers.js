@@ -336,11 +336,13 @@ const resolvers = {
 			return res.rows;
 		},
 		positions: async (parent, args, context) => {
+
 			let [dbQuery] = queryParseJson({
 				query: context.body.query,
 				variables: args ? args : context.body.variables,
 				tables,
 			});
+			console.log(dbQuery.positions)
 			const res = await client.query(dbQuery.positions);
 			return res.rows;
 		},

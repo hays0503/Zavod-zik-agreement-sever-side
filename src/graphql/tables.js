@@ -45,6 +45,7 @@ const tables = {
             "id": "id $*$",
             "name": "username $*$",
             "accesses": "accesses $*$",
+            "id_depart": "id_depart $*$",
         },
         "comment": "positions"
     },
