@@ -274,26 +274,30 @@ const resolvers = {
 			console.log(args)
 			let sql = `
             (
-                select
-				id,
-				username,
-				"admin",
-				accesses,
-				auth_type,
-				positions,
-				domain_username,
-				fio,
-				email
-					FROM users
-				WHERE id=  (
-							SELECT id_user
-							FROM 
-							departament_relationship
-							WHERE is_boss=true and id_departament = (
-																		SELECT id_departament
-																		FROM departament_relationship
-																		WHERE id_user${args.users.global.id})
-																	)
+				select
+                           users.id,
+                           users.username,
+                           users."admin",
+                           users.accesses,
+                           users.auth_type,
+                           users.positions,
+                           users.domain_username,
+                           users.fio,
+                           users.email,
+                           positions."name" as boss_position_name
+                                  FROM users Inner join positions on
+                                               	cast(users.positions->>0 as int) = positions.id
+                                               	and
+                                               	users.id = (
+                                                            SELECT id_user
+                                                            FROM 
+                                                            departament_relationship
+                                                            WHERE is_boss=true and id_departament = (
+                                                                SELECT id_departament
+                                                                FROM departament_relationship
+                                                                WHERE id_user${args.users.global.id}
+                                                            )
+                                                )
             )
             `;
 			let res = await client.query(sql);
