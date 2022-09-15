@@ -299,6 +299,7 @@ let typeDefs = gql`
 		document_tasks(document_tasks: JSON): [DocumentTasks]
 
 		get_boss_depart(users: JSON): [User]
+		get_free_position(positions: JSON): [Position]
 	}
 	type Mutation {
 		login(user: JSON): User

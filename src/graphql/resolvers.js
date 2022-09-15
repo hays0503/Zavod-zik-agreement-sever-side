@@ -271,7 +271,7 @@ const resolvers = {
 		},
 
 		get_boss_depart: async (parent, args) => {
-			console.log(args)
+			console.log(args);
 			let sql = `
             (
 				select
@@ -300,6 +300,21 @@ const resolvers = {
                                                 )
             )
             `;
+			let res = await client.query(sql);
+			return res.rows;
+		},
+
+		get_free_position: async (parent, args) => {
+			console.log(
+				"\x1b[42m%s\x1b[41m%s\x1b[0m",
+				`(get_free_position)`,
+				`Запрос: какие сейчас свободные позиции есть в департаменте с id_depart : ${args.positions.global.id_depart}`
+			);
+
+			let sql = `select * from positions where
+			id not in (select cast(positions->>0 as int) from users where cast(positions->>0 as int) in (SELECT id FROM positions WHERE is_user=false and id_depart ${args.positions.global.id_depart}))
+				and
+			id_depart ${args.positions.global.id_depart};`;
 			let res = await client.query(sql);
 			return res.rows;
 		},
@@ -336,13 +351,12 @@ const resolvers = {
 			return res.rows;
 		},
 		positions: async (parent, args, context) => {
-
 			let [dbQuery] = queryParseJson({
 				query: context.body.query,
 				variables: args ? args : context.body.variables,
 				tables,
 			});
-			console.log(dbQuery.positions)
+			console.log(dbQuery.positions);
 			const res = await client.query(dbQuery.positions);
 			return res.rows;
 		},
