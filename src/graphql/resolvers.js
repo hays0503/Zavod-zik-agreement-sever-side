@@ -322,6 +322,7 @@ const resolvers = {
 				and
 			id_depart ${args.positions.global.id_depart};`;
 			let res = await client.query(sql);
+			console.log(res.rows)
 			return res.rows;
 		},
 
