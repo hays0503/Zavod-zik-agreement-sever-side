@@ -28,6 +28,7 @@ let typeDefs = gql`
 		fio: String
 		email: String
 		departament_relationship: DepartamentRelationship
+		boss_position_name:String
 	}
 
 	type Position {

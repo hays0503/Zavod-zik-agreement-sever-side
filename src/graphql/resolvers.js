@@ -271,7 +271,7 @@ const resolvers = {
 		},
 
 		get_boss_depart: async (parent, args) => {
-			console.log(args);
+			console.log(args.users);
 			let sql = `
             (
 				select
@@ -301,6 +301,12 @@ const resolvers = {
             )
             `;
 			let res = await client.query(sql);
+			console.log(
+				"\x1b[42m%s\x1b[41m%s\x1b[42m%s\x1b[0m",
+				`(get_boss_depart)`,
+				`Запрос: Есть ли у этого пользователя босс ? id_user : ${args.users.global.id} `,
+				`Босс: ${res?.rows[0]?.fio}`				
+			);
 			return res.rows;
 		},
 
