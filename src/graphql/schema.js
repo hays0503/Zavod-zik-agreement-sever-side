@@ -228,7 +228,7 @@ let typeDefs = gql`
 		date: DateTime
 	}
 
-	type departmentDictionary {
+	type DepartmentDictionary {
 		id: ID
 		department_name: String
 	}
@@ -240,7 +240,7 @@ let typeDefs = gql`
 		is_vice_director: Boolean
 		is_user: Boolean
 		user: User
-		department: departmentDictionary
+		department: DepartmentDictionary
 	}
 
 	type Signatures {
@@ -283,7 +283,7 @@ let typeDefs = gql`
 		department_relationship(
 			department_relationship: JSON
 		): [DepartmentRelationship]
-		department_dictionary(department_dictionary: JSON): [departmentDictionary]
+		department_dictionary(department_dictionary: JSON): [DepartmentDictionary]
 
 		document_logs(document_logs: JSON): [DocumentLogs]
 		document_tasks_logs(document_tasks_logs: JSON): [DocumentTasksLogs]
