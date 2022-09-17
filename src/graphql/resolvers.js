@@ -154,22 +154,22 @@ const resolvers = {
 			const res = await client.query(dbQuery.documents);
 			return res.rows;
 		},
-		departament_dictionary: async (parent, args, context) => {
+		department_dictionary: async (parent, args, context) => {
 			let [dbQuery] = queryParseJson({
 				query: context.body.query,
 				variables: args ? args : context.body.variables,
 				tables,
 			});
-			const res = await client.query(dbQuery.departament_dictionary);
+			const res = await client.query(dbQuery.department_dictionary);
 			return res.rows;
 		},
-		departament_relationship: async (parent, args, context) => {
+		department_relationship: async (parent, args, context) => {
 			let [dbQuery] = queryParseJson({
 				query: context.body.query,
 				variables: args ? args : context.body.variables,
 				tables,
 			});
-			const res = await client.query(dbQuery.departament_relationship);
+			const res = await client.query(dbQuery.department_relationship);
 			return res.rows;
 		},
 
@@ -291,10 +291,10 @@ const resolvers = {
                                                	users.id = (
                                                             SELECT id_user
                                                             FROM 
-                                                            departament_relationship
-                                                            WHERE is_boss=true and id_departament = (
-                                                                SELECT id_departament
-                                                                FROM departament_relationship
+                                                            department_relationship
+                                                            WHERE is_boss=true and id_department = (
+                                                                SELECT id_department
+                                                                FROM department_relationship
                                                                 WHERE id_user${args.users.global.id}
                                                             )
                                                 )
@@ -305,7 +305,7 @@ const resolvers = {
 				"\x1b[42m%s\x1b[41m%s\x1b[42m%s\x1b[0m",
 				`(get_boss_depart)`,
 				`Запрос: Есть ли у этого пользователя босс ? id_user : ${args.users.global.id} `,
-				`Босс: ${res?.rows[0]?.fio}`				
+				`Босс: ${res?.rows[0]?.fio}`
 			);
 			return res.rows;
 		},
@@ -322,7 +322,7 @@ const resolvers = {
 				and
 			id_depart ${args.positions.global.id_depart};`;
 			let res = await client.query(sql);
-			console.log(res.rows)
+			console.log(res.rows);
 			return res.rows;
 		},
 

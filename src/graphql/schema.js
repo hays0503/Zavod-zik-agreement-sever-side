@@ -27,8 +27,8 @@ let typeDefs = gql`
 		domain_username: String
 		fio: String
 		email: String
-		departament_relationship: DepartamentRelationship
-		boss_position_name:String
+		department_relationship: DepartmentRelationship
+		boss_position_name: String
 	}
 
 	type Position {
@@ -36,6 +36,9 @@ let typeDefs = gql`
 		name: String
 		accesses: JSON
 		id_depart: Bigint
+		is_boss: Boolean
+		is_vice_director: Boolean
+		is_user: Boolean
 	}
 	type Application {
 		platform_version: String
@@ -225,19 +228,19 @@ let typeDefs = gql`
 		date: DateTime
 	}
 
-	type DepartamentDictionary {
+	type departmentDictionary {
 		id: ID
-		departament_name: String
+		department_name: String
 	}
 
-	type DepartamentRelationship {
+	type DepartmentRelationship {
 		id_user: Bigint
-		id_departament: Bigint
+		id_department: Bigint
 		is_boss: Boolean
 		is_vice_director: Boolean
 		is_user: Boolean
 		user: User
-		departament: DepartamentDictionary
+		department: departmentDictionary
 	}
 
 	type Signatures {
@@ -277,12 +280,10 @@ let typeDefs = gql`
 		document_routes(document_routes: JSON): [DocumentRoutes]
 		forms(forms: JSON): [Forms]
 
-		departament_relationship(
-			departament_relationship: JSON
-		): [DepartamentRelationship]
-		departament_dictionary(
-			departament_dictionary: JSON
-		): [DepartamentDictionary]
+		department_relationship(
+			department_relationship: JSON
+		): [DepartmentRelationship]
+		department_dictionary(department_dictionary: JSON): [departmentDictionary]
 
 		document_logs(document_logs: JSON): [DocumentLogs]
 		document_tasks_logs(document_tasks_logs: JSON): [DocumentTasksLogs]
