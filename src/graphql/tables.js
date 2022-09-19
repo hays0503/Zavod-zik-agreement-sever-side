@@ -148,15 +148,7 @@ const tables = {
 			date_created: "timestamp without time zone",
 			date_modified: "timestamp without time zone",
 			step: "bigint",
-			// "tasks_array":"row_to_json(j.*)FROM( select json_agg(id) from document_tasks where document_id=$Q$.id) as j"
-			// "array": `(
-			//     SELECT
-			//         array (SELECT row_to_json(j.*) AS agreement
-			//         FROM (SELECT $*$ FROM document_agreeting WHERE document_id = $Q$.id)
-			//     as j)
-			// ) as array`
 
-			//"tasks_array":"row_to_json(j.*)FROM( select json_agg(id) from document_tasks where document_id=$Q$.id) as j"
 		},
 		where: {
 			id: "id $*$",

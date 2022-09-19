@@ -322,7 +322,6 @@ const resolvers = {
 				and
 			id_depart ${args.positions.global.id_depart};`;
 			let res = await client.query(sql);
-			console.log(res.rows);
 			return res.rows;
 		},
 
@@ -509,9 +508,12 @@ const resolvers = {
 		},
 		// -----Documents mutatuions-----
 		insertDocument: async (parent, args) => {
-			await client.query(
-				`SELECT * FROM document_insert('${JSON.stringify(args.document)}')`
-			);
+			console.log(JSON.stringify(args.document));
+			await client
+				.query(
+					`SELECT * FROM document_insert('${JSON.stringify(args.document)}')`
+				)
+				.catch((e) => console.log(e));
 			publish("documents", client);
 			publish("document_logs", client);
 			return { type: "success", message: "Успешно создано" };

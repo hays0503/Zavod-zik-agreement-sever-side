@@ -75,7 +75,7 @@ const wss = new WebSocket.Server({ server: httpsServerSdWs });
 
 ////////////////////////////////////////////////////////////////////global cfg
 let getHost="'"+constants.host+"'";
-let hrReportInData;
+
 const debugFileLog = process.env.APPDATA + '\\sd.log';
 console.log(constants);
 
