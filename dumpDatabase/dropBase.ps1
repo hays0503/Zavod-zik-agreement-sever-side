@@ -1,6 +1,6 @@
 ﻿#Настройки скрипта===============================#
     #каталог куда установден постгрес 
-    $catalog = "C:\Program Files\PostgreSQL\13\bin"
+    $catalog = "C:\Program Files\PostgreSQL\14\bin"
     
     #password пароль для БД
     $env:PGPASSWORD = 'zoitib23Gverde'
