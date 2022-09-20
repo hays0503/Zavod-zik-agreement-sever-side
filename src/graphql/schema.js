@@ -350,6 +350,10 @@ let typeDefs = gql`
 		updatePosition(positions: JSON): Status
 		deletePosition(positions: JSON): Status
 
+		insertDepartmentDictionary(department_dictionary: JSON): Status
+		updateDepartmentDictionary(department_dictionary: JSON): Status
+		deleteDepartmentDictionary(department_dictionary: JSON): Status
+
 		deleteFile(document_files: JSON): Status
 
 		set_is_add_to_document(ID: Int, state: Boolean): Status
@@ -360,6 +364,7 @@ let typeDefs = gql`
 		positions(positions: JSON): [Position]
 		sessions(sessions: JSON): [Session]
 		documents(documents: JSON): [Documents]
+		department_dictionary(department_dictionary: JSON): [DepartmentDictionary]
 
 		document_tasks(document_tasks: JSON): [DocumentTasks]
 

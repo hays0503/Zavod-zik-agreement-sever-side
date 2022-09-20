@@ -460,6 +460,39 @@ const resolvers = {
 			//throw new Error('Пароли не совпадают!');};
 		},
 
+		insertDepartmentDictionary: async (parent, args) => {
+			await client.query(
+				`SELECT * FROM admin_document_department_insert('${JSON.stringify(
+					args.department_dictionary
+				)}')`
+			);
+			publish("department_dictionary", client);
+			return { type: "success", message: "Успешно создано" };
+		},
+		updateDepartmentDictionary: async (parent, args) => {
+			console.log(
+				`SELECT * FROM admin_document_department_update('${JSON.stringify(
+					args.department_dictionary
+				)}')`
+			);
+			await client.query(
+				`SELECT * FROM admin_document_department_update('${JSON.stringify(
+					args.department_dictionary
+				)}')`
+			);
+			publish("department_dictionary", client);
+			return { type: "success", message: "Успешно изменено" };
+		},
+		deleteDepartmentDictionary: async (parent, args) => {
+			await client.query(
+				`SELECT * FROM admin_document_department_delete('${JSON.stringify(
+					args.department_dictionary
+				)}')`
+			);
+			publish("department_dictionary", client);
+			return { type: "success", message: "Успешно удалено" };
+		},
+
 		insertPosition: async (parent, args) => {
 			await client.query(
 				`SELECT * FROM admin_document_position_insert('${JSON.stringify(
@@ -470,6 +503,11 @@ const resolvers = {
 			return { type: "success", message: "Успешно создано" };
 		},
 		updatePosition: async (parent, args) => {
+			console.log(
+				`SELECT * FROM admin_document_position_update('${JSON.stringify(
+					args.positions
+				)}')`
+			);
 			await client.query(
 				`SELECT * FROM admin_document_position_update('${JSON.stringify(
 					args.positions
@@ -748,7 +786,30 @@ const resolvers = {
 					variables: args,
 					tables,
 				});
+				console.log(`positions$query$${dbQuery.positions}`);
 				return pubSub.asyncIterator([`positions$query$${dbQuery.positions}`]);
+			},
+		},
+		department_dictionary: {
+			subscribe: (parent, args, context) => {
+				console.log("console.log({parent, args, context})", {
+					parent,
+					args,
+					context,
+				});
+				console.log("-------------variables", context.connection.variables);
+				let [dbQuery] = queryParseJson({
+					query: context.connection.query,
+					variables: args,
+					tables,
+				});
+
+				console.log(
+					`department_dictionary$query$${dbQuery.department_dictionary}`
+				);
+				return pubSub.asyncIterator([
+					`department_dictionary$query$${dbQuery.department_dictionary}`,
+				]);
 			},
 		},
 		documents: {
