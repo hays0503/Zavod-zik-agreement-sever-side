@@ -271,7 +271,7 @@ const resolvers = {
 		},
 
 		get_boss_depart: async (parent, args) => {
-			console.log(args.users);
+			// console.log(args.users);
 			let sql = `
             (
 				select
@@ -362,7 +362,7 @@ const resolvers = {
 				variables: args ? args : context.body.variables,
 				tables,
 			});
-			console.log(dbQuery.positions);
+			// console.log(dbQuery.positions);
 			const res = await client.query(dbQuery.positions);
 			return res.rows;
 		},
@@ -470,11 +470,6 @@ const resolvers = {
 			return { type: "success", message: "Успешно создано" };
 		},
 		updateDepartmentDictionary: async (parent, args) => {
-			console.log(
-				`SELECT * FROM admin_document_department_update('${JSON.stringify(
-					args.department_dictionary
-				)}')`
-			);
 			await client.query(
 				`SELECT * FROM admin_document_department_update('${JSON.stringify(
 					args.department_dictionary
@@ -503,11 +498,6 @@ const resolvers = {
 			return { type: "success", message: "Успешно создано" };
 		},
 		updatePosition: async (parent, args) => {
-			console.log(
-				`SELECT * FROM admin_document_position_update('${JSON.stringify(
-					args.positions
-				)}')`
-			);
 			await client.query(
 				`SELECT * FROM admin_document_position_update('${JSON.stringify(
 					args.positions
@@ -546,7 +536,6 @@ const resolvers = {
 		},
 		// -----Documents mutatuions-----
 		insertDocument: async (parent, args) => {
-			console.log(JSON.stringify(args.document));
 			await client
 				.query(
 					`SELECT * FROM document_insert('${JSON.stringify(args.document)}')`
@@ -786,27 +775,17 @@ const resolvers = {
 					variables: args,
 					tables,
 				});
-				console.log(`positions$query$${dbQuery.positions}`);
 				return pubSub.asyncIterator([`positions$query$${dbQuery.positions}`]);
 			},
 		},
 		department_dictionary: {
 			subscribe: (parent, args, context) => {
-				console.log("console.log({parent, args, context})", {
-					parent,
-					args,
-					context,
-				});
-				console.log("-------------variables", context.connection.variables);
 				let [dbQuery] = queryParseJson({
 					query: context.connection.query,
 					variables: args,
 					tables,
 				});
 
-				console.log(
-					`department_dictionary$query$${dbQuery.department_dictionary}`
-				);
 				return pubSub.asyncIterator([
 					`department_dictionary$query$${dbQuery.department_dictionary}`,
 				]);
@@ -900,19 +879,4 @@ const resolvers = {
 
 module.exports = {
 	resolvers,
-};
-
-let sss = {
-	_where: {
-		AND: [
-			{
-				OR: [
-					{
-						timestamp: ">10",
-					},
-				],
-			},
-			{ AND: [] },
-		],
-	},
 };
