@@ -140,6 +140,8 @@ let typeDefs = gql`
 		data_custom: [DataCustom]
 		document_tasks: [DocumentTasks]
 		route_data: JSON
+		mitwork_number: String
+		mitwork_data: DateTime
 	}
 	type DocumentTasks {
 		id: ID
@@ -357,6 +359,12 @@ let typeDefs = gql`
 		deleteFile(document_files: JSON): Status
 
 		set_is_add_to_document(ID: Int, state: Boolean): Status
+
+		updateMitWork(
+			ID: Int
+			mitwork_number: String
+			mitwork_data: DateTime
+		): Status
 	}
 	type Subscription {
 		authMe(test: JSON): [User]

@@ -12,6 +12,7 @@ const { queryParseJson } = require("../core/functions");
 
 const { publish } = require("./graphqlFunctions");
 const { pubSub } = require("../../config/graphqlPubSubConfig");
+const picColor = require("../core/color");
 
 const testCache = [10, 20, 30];
 
@@ -302,7 +303,7 @@ const resolvers = {
             `;
 			let res = await client.query(sql);
 			console.log(
-				"\x1b[42m%s\x1b[41m%s\x1b[42m%s\x1b[0m",
+				`${picColor.BGgreen}${picColor.black}%s${picColor.reset}`,
 				`(get_boss_depart)`,
 				`Запрос: Есть ли у этого пользователя босс ? id_user : ${args.users.global.id} `,
 				`Босс: ${res?.rows[0]?.fio}`
@@ -312,7 +313,7 @@ const resolvers = {
 
 		get_free_position: async (parent, args) => {
 			console.log(
-				"\x1b[42m%s\x1b[41m%s\x1b[0m",
+				`${picColor.BGgreen}${picColor.black}%s${picColor.reset}`,
 				`(get_free_position)`,
 				`Запрос: какие сейчас свободные позиции есть в департаменте с id_depart : ${args.positions.global.id_depart}`
 			);
@@ -413,6 +414,28 @@ const resolvers = {
 			);
 			publish("users", client);
 			return { type: "success", message: "Успешно создано!" };
+		},
+
+		updateMitWork: async (parent, args) => {
+			console.log(
+				`${picColor.BGgreen}${picColor.black}%s${picColor.reset}`,
+				`(updateMitWork)`,
+				`Аргументы изменение:  : ${JSON.stringify(args)}`
+			);
+
+			const number = args.mitwork_number ? args.mitwork_number : "NULL";
+			const SQL = `UPDATE documents SET 
+				mitwork_number=${number},
+				mitwork_data='${now(args.mitwork_data)}' WHERE id=${args.ID};`;
+
+			console.log(
+				`${picColor.BGgreen}${picColor.black}%s${picColor.reset}`,
+				`(updateMitWork)`,
+				`Изменение:  : ${SQL}`
+			);
+			await client.query(SQL);
+			publish("documents", client);
+			return { type: "success", message: "Успешно изменено!" };
 		},
 		updateUser: async (parent, args) => {
 			const password =
