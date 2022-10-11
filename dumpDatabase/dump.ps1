@@ -1,21 +1,21 @@
 #��������� �������===============================#
-    #������� ���� ���������� �������� 
-    $catalog = "C:\Program Files\PostgreSQL\14\bin"
+#������� ���� ���������� �������� 
+$catalog = "C:\Program Files\PostgreSQL\13\bin"
     
-    #�������� �� ��� ������ ��� ������������
-    $nameDB = 'agreement'
+#�������� �� ��� ������ ��� ������������
+$nameDB = 'agreement'
  
-    #�������� ������
-    $backupname = 'db.dump'
+#�������� ������
+$backupname = 'db.dump'
  
-    #������� ��� ������
-    $pgbackupdir = 'G:\projects\agreement_git\srv\dumpDatabase'
+#������� ��� ������
+$pgbackupdir = 'D:\Project\git\srv\dumpDatabase'
     
-    #user. ������������ �� ��������� postgres
-    $user = 'postgres'
+#user. ������������ �� ��������� postgres
+$user = 'postgres'
     
-    #password ������ ��� ��
-    $env:PGPASSWORD = 'zoitib23Gverde'
+#password ������ ��� ��
+$env:PGPASSWORD = 'zoitib23Gverde'
  
 #��������� �������===============================#
  
