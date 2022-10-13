@@ -9,7 +9,7 @@
     $backupname = '20.09'
  
     #Каталог для бэкапа
-    $pgbackupdir = 'D:\Project\git\srv\dumpDatabase'
+    $pgbackupdir = $PSScriptRoot
     
     #Имя БД в которую будем востонавливать
     $restordb = 'agreement'
