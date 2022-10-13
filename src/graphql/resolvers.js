@@ -101,36 +101,33 @@ const resolvers = {
 					console.log(`SELECT *,
 					array(select name from positions where id = any(array[(
 					select array(select json_array_elements_text(t.positions)::bigint
-					from users t where id=${req.user.id}) from users where id=${req.user.id})])) as position_names,
+					from users t where ${picColor.red}id=${req.user.id}${picColor.reset}) from users where ${picColor.red}id=${req.user.id}${picColor.reset})])) as position_names,
 
 					(select accesses from positions where id = any(array[(
 					select array(select json_array_elements_text(t.positions)::bigint
-					from users t where id=${req.user.id}) from users where id=${req.user.id})])) as position_accesses
+					from users t where ${picColor.red}id=${req.user.id}${picColor.reset}) from users where ${picColor.red}id=${req.user.id}${picColor.reset})])) as position_accesses
 					
-					FROM users where id=${req.user.id}`)
-					console.log(
-						`${picColor.BGgreen}${picColor.black}`,
-						`(authMe)`,
-						`${picColor.reset}${picColor.reverse}Аргументы:  : ${
-							picColor.reset
-						}${JSON.stringify(args)}`
-					);
+					FROM users where ${picColor.red}id=${req.user.id}${picColor.reset}`);
 					console.log(
 						`${picColor.BGgreen}${picColor.black}`,
 						`(authMe)`,
 						`${picColor.reset}${picColor.reverse}Запрос:  : ${
 							picColor.reset
-						}${JSON.stringify(request)}`
+						}${JSON.stringify(request, null, " ")}`
 					);
 					console.log(
 						`${picColor.BGgreen}${picColor.black}`,
 						`(authMe)`,
 						`${picColor.reset}${picColor.reverse}Ответ:  : ${
 							picColor.reset
-						}${JSON.stringify({
-							...request.rows[0],
-							password: "",
-						})}`
+						}${JSON.stringify(
+							{
+								...request.rows[0],
+								password: "",
+							},
+							null,
+							" "
+						)}`
 					);
 					return [
 						{

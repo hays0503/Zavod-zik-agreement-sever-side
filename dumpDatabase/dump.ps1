@@ -7,9 +7,11 @@ $nameDB = 'agreement'
  
 #�������� ������
 $backupname = 'db.dump'
+
+$dir = '\dumpDatabase'
  
 #������� ��� ������
-$pgbackupdir = 'D:\Project\git\srv\dumpDatabase'
+$pgbackupdir = $PSScriptRoot
     
 #user. ������������ �� ��������� postgres
 $user = 'postgres'
