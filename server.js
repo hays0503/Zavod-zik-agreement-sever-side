@@ -339,17 +339,21 @@ const storageConfig = multer.diskStorage({
 
 app.use(multer({ storage: storageConfig }).single("file"));
 //app.use(multer({ storage: storageConfig }).array("multi-files", 10));
+
+//НЕ РАБОТАЕТ [Поставил зуглушку что бы работало отображение загрузки файлов]
 app.post("/document-control/orders", function (req, res, next) {
 	let filedata = req.file;
-	if (!filedata) res.send("Ошибка при загрузке файла");
+	if (!filedata) res.send("Файл в процессе загрузки....");
 	else res.send("Файл загружен");
 });
+/////////////////////////////////////////////////////////////////////////////
+//НЕ РАБОТАЕТ [Поставил зуглушку что бы работало отображение загрузки файлов]
 app.post("/document-control/for-execution-inbox", function (req, res, next) {
 	let filedata = req.file;
-	if (!filedata) res.send("Ошибка при загрузке файла");
+	if (!filedata) res.send("Файл в процессе загрузки....");
 	else res.send("Файл загружен");
 });
-
+/////////////////////////////////////////////////////////////////////////////
 app.post("/get-file", async (req, res) => {
 	const { writeFile } = require("fs");
 	const { promisify } = require("util");
