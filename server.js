@@ -259,14 +259,15 @@ app.post("/api/tasks_files_is_add_to_document", async (req, res, next) => {
 	res.json({ result: result.rows });
 });
 
-/*app.post('/api/notifications', (req, res, next) => {
+app.post('/api/notifications', (req, res, next) => {
     sendPopEmail(req.body.address)
     let temp = {type:'notification'}
     wss.clients.forEach(async function each(ws) {
         ws.send(JSON.stringify(temp))
     });
     console.log('notification arrived')
-});*/
+});
+
 let tableData;
 app.post("/api/tabledata", (req, res, next) => {
 	tableData = req.body.currentTableData;

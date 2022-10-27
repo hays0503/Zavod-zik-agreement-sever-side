@@ -421,16 +421,39 @@ const resolvers = {
 	Mutation: {
 		// global
 		login: async (parent, args) => {
+			console.log(
+				`${picColor.BGgreen}${picColor.black}%s${picColor.reset}`,
+				`(login)`,
+				`Мутация: Попытка сверки логина и пароля : Логин:${args.user.username} Пароль:${args.user.password}`
+			);
+
 			let req = await client.query(
 				`SELECT id, username, password FROM users WHERE username = '${args.user.username}'`
 			);
 			if (req.rows.length == 0) {
+				console.log(
+					`${picColor.BGyellow}${picColor.black}%s${picColor.reset}`,
+					`(login-Ответ)`,
+					`Мутация: Попытка сверки ${picColor.BGyellow}${picColor.black}логина${picColor.reset} => Логина:${args.user.username}`,
+					`${picColor.BGred}${picColor.black}Провалено!${picColor.reset}`
+				);
 				throw new Error("Неверно введен логин!");
 			}
 			let user = req.rows[0];
 			if (await bcryptjs.compare(args.user.password, user.password)) {
+				console.log(
+					`${picColor.BGgreen}${picColor.black}%s${picColor.reset}`,
+					`(login-Ответ)`,
+					`Мутация: Попытка сверки логина и пароля : Логин:${args.user.username} Пароль:${args.user.password} ${picColor.BGgreen}${picColor.black}Совпадение !${picColor.reset}`
+				);
 				return { username: args.user.username };
 			} else {
+				console.log(
+					`${picColor.BGyellow}${picColor.black}%s${picColor.reset}`,
+					`(login-Ответ)`,
+					`Мутация: Попытка сверки ${picColor.BGyellow}${picColor.black}пароля${picColor.reset} => Пароль:${args.user.password}`,
+					`${picColor.BGred}${picColor.black}Провалено!${picColor.reset}`
+				);
 				throw new Error("Неверно введен пароль!");
 			}
 		},
