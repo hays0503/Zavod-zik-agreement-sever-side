@@ -10,6 +10,8 @@
 
 # production
 /build
+build/*
+*.exe
 
 # misc
 .DS_Store
@@ -28,4 +30,18 @@ build/asset-manifest.json
 yarn-error.log*
 >>>>>>> parent of 170a14f (gitignore modified)
 
+.gitignore
+
+build/index.html
+.gitignore
+build/index.html
+build/asset-manifest.json
+uploads/sanct.log
+build/index.html
+build/asset-manifest.json
+.gitignore
+build/index.html
+build/index.html
+build/index.html
+AutoBuild.ps1
 .gitignore
