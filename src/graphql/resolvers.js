@@ -349,10 +349,19 @@ const resolvers = {
         `Запрос: какие сейчас свободные позиции есть в департаменте с id_depart : ${args.positions.global.id_depart}`
       );
 
-      let sql = `select * from positions where
-			id not in (select cast(positions->>0 as int) from users where cast(positions->>0 as int) in (SELECT id FROM positions WHERE is_user=false and id_depart ${args.positions.global.id_depart}))
-				and
-			id_depart ${args.positions.global.id_depart};`;
+      let sql = `SELECT * FROM positions WHERE 
+			(id NOT IN 
+				(SELECT cast(positions->>0 as int) FROM users WHERE cast(positions->>0 as int) IN 
+					(SELECT id FROM positions WHERE is_user=false AND id_depart ${args.positions.global.id_depart})
+				)
+			AND id_depart ${args.positions.global.id_depart});`;
+      let res = await client.query(sql);
+      return res.rows;
+    },
+
+    //Достать одну позицию по id
+    position: async (parent, args) => {
+      let sql = `SELECT * FROM positions WHERE id ${args.position.global.id}`;
       let res = await client.query(sql);
       return res.rows;
     },
