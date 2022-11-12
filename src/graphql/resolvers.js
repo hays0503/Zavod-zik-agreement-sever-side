@@ -13,6 +13,7 @@ const { queryParseJson } = require("../core/functions");
 const { publish } = require("./graphqlFunctions");
 const { pubSub } = require("../../config/graphqlPubSubConfig");
 const picColor = require("../core/color");
+const { stringify } = require("ini");
 
 const testCache = [10, 20, 30];
 
@@ -350,10 +351,45 @@ const resolvers = {
 			);
 
 			let sql = `select * from positions where
-			id not in (select cast(positions->>0 as int) from users where cast(positions->>0 as int) in (SELECT id FROM positions WHERE is_user=false and id_depart ${args.positions.global.id_depart}))
+						id not in (select cast(positions->>0 as int) from users where cast(positions->>0 as int) in
+						(SELECT id FROM positions WHERE is_user=false and id_depart ${args.positions.global.id_depart}))
 				and
 			id_depart ${args.positions.global.id_depart};`;
 			let res = await client.query(sql);
+			return res.rows;
+		},
+
+		task_files_in_id: async (parent, args) => {
+			console.log(args.task_files_in_id.global.id.length);
+			if (args.task_files_in_id.global.id.length == 0) {
+				return null;
+			}
+
+			let sql = `
+            (
+				SELECT id, filename, data_file, task_id FROM public.document_tasks_files
+				WHERE id in (${args.task_files_in_id.global.id.join(",")})
+            )
+            `;
+			let res = await client.query(sql);
+
+			console.log(
+				`${picColor.BGgreen}${picColor.black}%s${picColor.reset}`,
+				`(task_files_in_id)`,
+				`\t\t\n\t\t\tЗапрос`,
+				`\t\t\nПрикрепить поручателю файлы,`,
+				`\t\t\nкоторые были добавлены по поручению`,
+				`\t\t\nна прошлых этапах ? document_tasks_files in id : (${args.task_files_in_id.global.id.join(
+					","
+				)}) `,
+				`\t\t\n\t\t\tФайлы`,
+				`\n${picColor.BGblue}${picColor.black}
+				${stringify(
+					res?.rows.map((i) => {
+						return i.filename;
+					})
+				)}${picColor.reset}`
+			);
 			return res.rows;
 		},
 
@@ -362,7 +398,7 @@ const resolvers = {
             (
                 select filename, data_file
                     from document_files
-                        where document_id = ${args.id}
+                        where document_id = ${args.id} 
                 )
                 union all
                 (
@@ -594,10 +630,21 @@ const resolvers = {
 		},
 		// -----Documents Tasks -------
 		insertDocumentTasks: async (parent, args) => {
+			console.log(
+				`${picColor.BGyellow}${picColor.black}%s${picColor.reset}`,
+				`(insertDocumentTasks)`
+			);
 			await client.query(
 				`SELECT * FROM document_tasks_insert('${JSON.stringify(
 					args.document_tasks
 				)}')`
+			);
+			console.log(
+				`Мутация: ${picColor.BGyellow}${
+					picColor.black
+				}Создание нового поручение ${picColor.reset} => ${JSON.stringify(
+					args.document_tasks
+				)}`
 			);
 			publish("document_tasks", client);
 			return { type: "success", message: "Успешно создано" };
@@ -613,6 +660,7 @@ const resolvers = {
 		},
 		// -----Documents mutatuions-----
 		insertDocument: async (parent, args) => {
+			console.log(JSON.stringify(args.document));
 			await client
 				.query(
 					`SELECT * FROM document_insert('${JSON.stringify(args.document)}')`

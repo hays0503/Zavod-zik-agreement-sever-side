@@ -223,6 +223,7 @@ const tables = {
 			document_tasks_files:
 				"ARRAY(SELECT row_to_json(j.*) FROM (SELECT $*$ FROM document_tasks_files AS $Q++$ WHERE filename is not null and task_id IN (SELECT id FROM document_tasks WHERE id = $Q$.id) $WHERE$ $ORDER_BY$) as j ) AS document_tasks_files",
 			report: "character varying",
+			document_tasks_id_file: "bigint",
 			// "document":"ARRAY(SELECT row_to_json(m.*) FROM(select d.title, d.id from document_tasks t join documents d on t.document_id = d.id where d.id=301) m) as document"
 		},
 		where: {
