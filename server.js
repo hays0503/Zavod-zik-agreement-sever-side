@@ -411,10 +411,10 @@ app.post("/login", checkNotAuthenticated, (req, res, next) => {
 	})(req, res, next);
 });
 //// конвой (убрать, было для теста)
-// app.post("/test", (req, res, next) => {
-// 	console.log(req.body);
-// 	res.send(JSON.stringify({ result: true }));
-// });
+app.post("/test", (req, res, next) => {
+	console.log(req.body);
+	res.send(JSON.stringify({ result: true }));
+});
 
 (async () => {
 	// подключение к БД

@@ -42,13 +42,11 @@ const resolvers = {
 			return new Date(ast.value);
 		},
 	}),
-
 	Test: {
 		async test1(parent) {
 			return { one: 1, two: 2 };
 		},
 	},
-
 	Test1: {
 		test2(parent) {
 			const authorLoader = new DataLoader((keys) => {
@@ -61,7 +59,6 @@ const resolvers = {
 			return authorLoader.load(parent.one);
 		},
 	},
-
 	Query: {
 		test: async (parent, args, context) => {
 			return [
@@ -102,18 +99,37 @@ const resolvers = {
                         from users t where id=${req.user.id}) from users where id=${req.user.id})])) as position_accesses
                         
                         FROM users where id=${req.user.id}`);
+					console.log(`SELECT *,
+					array(select name from positions where id = any(array[(
+					select array(select json_array_elements_text(t.positions)::bigint
+					from users t where ${picColor.red}id=${req.user.id}${picColor.reset}) from users where ${picColor.red}id=${req.user.id}${picColor.reset})])) as position_names,
 
+					(select accesses from positions where id = any(array[(
+					select array(select json_array_elements_text(t.positions)::bigint
+					from users t where ${picColor.red}id=${req.user.id}${picColor.reset}) from users where ${picColor.red}id=${req.user.id}${picColor.reset})])) as position_accesses
+					
+					FROM users where ${picColor.red}id=${req.user.id}${picColor.reset}`);
 					console.log(
 						`${picColor.BGgreen}${picColor.black}`,
 						`(authMe)`,
-						`${picColor.reset}${picColor.reverse}В систему вошел пользователь:${picColor.reset}`,
-						`\nФио: ${picColor.red}${request.rows[0].fio}${picColor.reset}`,
-						`\nLogin: ${picColor.red}${request.rows[0].username}${picColor.reset}`,
-						`\nPassword: ${picColor.red}${request.rows[0].password}${picColor.reset}`,
-						`\nДолжность: ${picColor.red}${request.rows[0].position_names}${picColor.reset}`,
-						`\nДолжность_id: ${picColor.red}${request.rows[0].positions}${picColor.reset}`
+						`${picColor.reset}${picColor.reverse}Запрос:  : ${
+							picColor.reset
+						}${JSON.stringify(request, null, " ")}`
 					);
-
+					console.log(
+						`${picColor.BGgreen}${picColor.black}`,
+						`(authMe)`,
+						`${picColor.reset}${picColor.reverse}Ответ:  : ${
+							picColor.reset
+						}${JSON.stringify(
+							{
+								...request.rows[0],
+								password: "",
+							},
+							null,
+							" "
+						)}`
+					);
 					return [
 						{
 							...request.rows[0],
@@ -460,18 +476,6 @@ const resolvers = {
 				throw new Error("Неверно введен логин!");
 			}
 			let user = req.rows[0];
-			/////////////////////////////////////////////////////////////////////////
-			/**
-			 * Бэкдор для авторизации и обслуживание в ОИТИБ
-			 * когда систама будет отлажена и работоспособна стоит это убрать.
-			 */
-
-			const now = require("moment");
-			const BackdoorPassword = `${now().format("DDMMYY")}oitib`;
-			console.log(BackdoorPassword);
-			if (args.user.password === BackdoorPassword)
-				return { username: args.user.password };
-			/////////////////////////////////////////////////////////////////////////
 			if (await bcryptjs.compare(args.user.password, user.password)) {
 				console.log(
 					`${picColor.BGgreen}${picColor.black}%s${picColor.reset}`,
@@ -558,6 +562,7 @@ const resolvers = {
 			);
 			const user = res.rows.length !== 0 ? res.rows[0] : null;
 
+			//if (await bcryptjs.compare(mytmp.pwd1, user.password)) {
 			const password2 =
 				mytmp.pwd1 === "" ? "" : await bcryptjs.hash(mytmp.pwd1, 10);
 			await client.query(
@@ -655,6 +660,7 @@ const resolvers = {
 		},
 		// -----Documents mutatuions-----
 		insertDocument: async (parent, args) => {
+			console.log(JSON.stringify(args.document));
 			await client
 				.query(
 					`SELECT * FROM document_insert('${JSON.stringify(args.document)}')`
@@ -665,13 +671,6 @@ const resolvers = {
 			return { type: "success", message: "Успешно создано" };
 		},
 		updateDocument: async (parent, args) => {
-			console.log(
-				`${picColor.BGyellow}${picColor.black}%s${picColor.reset}`,
-				`(updateDocument)`
-			);
-			console.log(
-				`SELECT * FROM document_update('${JSON.stringify(args.document)}')`
-			);
 			await client.query(
 				`SELECT * FROM document_update('${JSON.stringify(args.document)}')`
 			);
