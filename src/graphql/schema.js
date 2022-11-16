@@ -281,6 +281,7 @@ let typeDefs = gql`
     dateTime: DateTime
     users(users: JSON): [User]
     positions(positions: JSON): [Position]
+    position(position: JSON): [Position]
     user_roles(user_roles: JSON): [Role]
     sessions(sessions: JSON): [Session]
     documents(documents: JSON): [Documents]
