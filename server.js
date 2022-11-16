@@ -347,8 +347,8 @@ app.post("/login", checkNotAuthenticated, (req, res, next) => {
 });
 //// конвой (убрать, было для теста)
 // app.post("/test", (req, res, next) => {
-//   console.log(req.body);
-//   res.send(JSON.stringify({ result: true }));
+// 	console.log(req.body);
+// 	res.send(JSON.stringify({ result: true }));
 // });
 
 (async () => {
