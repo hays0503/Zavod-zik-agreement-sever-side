@@ -87,41 +87,14 @@ let uploadFolderPath = path.dirname(process.execPath) + "\\uploads";
 console.log("Upload folder:", uploadFolderPath);
 
 //mail transport
-const nodemailer = require("nodemailer");
-let transporter = nodemailer.createTransport({
-  host: "smtp.mail.ru",
-  port: 465,
-  secure: true,
-  tls: {
-    rejectUnauthorized: false,
-    ca: [certificate],
-  },
-  auth: {
-    user: "noszone@mail.ru",
-    pass: "XcpTb2r4FZ5H1fbNrzHJ",
-  },
-});
-
-const sendPopEmail = (sender) => {
-  if (constants.isSendEmail === 1) {
-    transporter.sendMail(
-      {
-        from: "noszone@mail.ru",
-        to: sender,
-        subject: "[Новые события на портале ZiK-Договора]",
-        text: "Есть непрочитанные элементы в вашем аккаунте.",
-      },
-      function (err, info) {
-        if (err) {
-          console.log("mail error:", err);
-        } else {
-          console.log("mail ok", info);
-        }
-      }
-    );
-  } else {
-    console.log("email notification disabled");
-  }
+const {
+  sendMail: sendEmail,
+  listenToDBAndSendEmail,
+} = require("./src/notificaton/emailNotification");
+//email notifications
+listenToDBAndSendEmail(connectionString, certificate);
+const sendPopEmail = (receiver) => {
+  sendEmail(receiver, certificate);
 };
 
 // настройка express
@@ -159,48 +132,6 @@ function checkNotAuthenticated(req, res, next) {
   }
   next();
 }
-
-//email notifications
-let emailPgClient = new pg.Client(connectionString);
-emailPgClient.connect();
-emailPgClient.query("listen document_logs");
-emailPgClient.query("listen document_tasks_logs");
-emailPgClient.on("notification", async (data) => {
-  const dbPayload = JSON.parse(data.payload);
-  console.log("document_logs insert:", dbPayload);
-  switch (dbPayload.type) {
-    case "document_logs":
-      console.log("notification: events", dbPayload);
-      if (dbPayload.data.user_id) {
-        emailPgClient.query(
-          `SELECT email FROM users WHERE id = ${dbPayload.data.user_id}`,
-          (err, result) => {
-            if (err) {
-              return console.error("error head reply pg query:", err);
-            }
-            //console.log("result.rows[0].id",result.rows[0].id)
-            if (result.rows[0].email) sendPopEmail(result.rows[0].email);
-          }
-        );
-      }
-      break;
-    case "document_tasks_logs":
-      console.log("notification: events", dbPayload);
-      if (dbPayload.data.user_id) {
-        emailPgClient.query(
-          `SELECT email FROM users WHERE id = ${dbPayload.data.user_id}`,
-          (err, result) => {
-            if (err) {
-              return console.error("error head reply pg query:", err);
-            }
-            //console.log("result.rows[0].id",result.rows[0].id)
-            if (result.rows[0].email) sendPopEmail(result.rows[0].email);
-          }
-        );
-      }
-      break;
-  }
-});
 
 //file downloads from browser
 let filePgClient = new pg.Client(connectionString);
@@ -415,17 +346,10 @@ app.post("/login", checkNotAuthenticated, (req, res, next) => {
   })(req, res, next);
 });
 //// конвой (убрать, было для теста)
-<<<<<<< HEAD
-app.post("/test", (req, res, next) => {
-  console.log(req.body);
-  res.send(JSON.stringify({ result: true }));
-});
-=======
 // app.post("/test", (req, res, next) => {
-// 	console.log(req.body);
-// 	res.send(JSON.stringify({ result: true }));
+//   console.log(req.body);
+//   res.send(JSON.stringify({ result: true }));
 // });
->>>>>>> 7768c31a1c0134cc266fbc09024d09ab3eb7f461
 
 (async () => {
   // подключение к БД

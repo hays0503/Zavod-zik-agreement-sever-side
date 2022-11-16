@@ -14,6 +14,9 @@ fs.close;
 
 const constants = {
   debug: false,
+  isSendEmail: config.HardSettings.isSendEmail
+    ? config.HardSettings.isSendEmail
+    : 1,
   port: 8445,
   host: config.HardSettings.Host,
   database: {
