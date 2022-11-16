@@ -163,6 +163,7 @@ let typeDefs = gql`
     document_tasks_logs: [DocumentTasksLogs]
     document: [Documents]
     report: Bigint
+    document_tasks_id_file: Bigint
   }
   type DocumentTasksFiles {
     id: ID
@@ -262,6 +263,14 @@ let typeDefs = gql`
     document_id: Bigint
   }
 
+  type Files_Task {
+    id: ID
+    filename: String
+    data_file: String
+    task_id: Bigint
+    is_add_to_document: Boolean
+  }
+
   # generated automatically
   type Query {
     test: [Test]
@@ -272,7 +281,6 @@ let typeDefs = gql`
     dateTime: DateTime
     users(users: JSON): [User]
     positions(positions: JSON): [Position]
-    position(position: JSON): [Position]
     user_roles(user_roles: JSON): [Role]
     sessions(sessions: JSON): [Session]
     documents(documents: JSON): [Documents]
@@ -302,6 +310,8 @@ let typeDefs = gql`
     ): [DataAgreementListInternalNeeds]
     data_custom(data_custom: JSON): [DataCustom]
     document_tasks(document_tasks: JSON): [DocumentTasks]
+
+    task_files_in_id(task_files_in_id: JSON): [Files_Task]
 
     get_boss_depart(users: JSON): [User]
     get_free_position(positions: JSON): [Position]
