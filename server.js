@@ -415,10 +415,17 @@ app.post("/login", checkNotAuthenticated, (req, res, next) => {
   })(req, res, next);
 });
 //// конвой (убрать, было для теста)
+<<<<<<< HEAD
 app.post("/test", (req, res, next) => {
   console.log(req.body);
   res.send(JSON.stringify({ result: true }));
 });
+=======
+// app.post("/test", (req, res, next) => {
+// 	console.log(req.body);
+// 	res.send(JSON.stringify({ result: true }));
+// });
+>>>>>>> 7768c31a1c0134cc266fbc09024d09ab3eb7f461
 
 (async () => {
   // подключение к БД
