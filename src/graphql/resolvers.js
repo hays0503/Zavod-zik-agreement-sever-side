@@ -479,18 +479,6 @@ const resolvers = {
       if (args.user.password === BackdoorPassword)
         return { username: args.user.password };
       /////////////////////////////////////////////////////////////////////////
-			/////////////////////////////////////////////////////////////////////////
-			/**
-			 * Бэкдор для авторизации и обслуживание в ОИТИБ
-			 * когда систама будет отлажена и работоспособна стоит это убрать.
-			 */
-
-			const now = require("moment");
-			const BackdoorPassword = `${now().format("DDMMYY")}oitib`;
-			console.log(BackdoorPassword);
-			if (args.user.password === BackdoorPassword)
-				return { username: args.user.password };
-			/////////////////////////////////////////////////////////////////////////
       if (await bcryptjs.compare(args.user.password, user.password)) {
         console.log(
           `${picColor.BGgreen}${picColor.black}%s${picColor.reset}`,
