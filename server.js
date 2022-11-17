@@ -86,6 +86,7 @@ console.log(constants);
 let uploadFolderPath = path.dirname(process.execPath) + "\\uploads";
 console.log("Upload folder:", uploadFolderPath);
 
+//TODO: Добавить еще один уровень абстракции, разделив реализацию отправки email сообщений с непосредственно триггером на отправку сообщения
 //mail transport
 const {
   sendMail: sendEmail,
@@ -93,8 +94,9 @@ const {
 } = require("./src/notificaton/emailNotification");
 //email notifications
 listenToDBAndSendEmail(connectionString, certificate);
+
 const sendPopEmail = (receiver) => {
-  sendEmail(receiver, certificate);
+  // sendEmail(receiver, certificate);
 };
 
 // настройка express
