@@ -21,5 +21,5 @@ xcopy build\*.* $Server_folder_build /E /K /D /H /Y
 
 cd $Server_folder
 # echo 'Запуск...'
-start chrome https://192.168.0.34:8445/
+start chrome https://192.168.0.138:8445/
 npm start
