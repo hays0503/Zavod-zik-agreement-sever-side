@@ -9,16 +9,18 @@ function constructTransporter(certificate) {
   //mail transport
   const nodemailer = require("nodemailer");
   transporter = nodemailer.createTransport({
-    host: "smtp.mail.ru",
-    port: 465,
-    secure: true,
+    host: "EXCHANGE.zik.loc",
+    port: 25,
+    secureConnection: true,
     tls: {
       rejectUnauthorized: false,
+      maxVersion: "TLSv1.3",
+      minVersion: "TLSv1",
       ca: [certificate],
     },
     auth: {
-      user: "noszone@mail.ru",
-      pass: "XcpTb2r4FZ5H1fbNrzHJ",
+      user: "zikdogovory",
+      pass: "123456Aa+",
     },
   });
 
@@ -52,7 +54,7 @@ function sendMail(receiver, text = null, certificate = null) {
   console.log("email send to smtp");
   transporter.sendMail(
     {
-      from: "noszone@mail.ru",
+      from: "zikdogovory@zik.kz",
       to: receiver,
       subject: "[Новые события на портале ZiK-Договора]",
       text: text ? text : "Есть непрочитанные элементы в вашем аккаунте.",
@@ -170,10 +172,7 @@ function documentNotification(dbPayload) {
         .then((values) => {
           const email = values[0];
           const documentName = values[1];
-          const text = getTextByType_documentTask(
-            notificationType,
-            documentName
-          );
+          const text = getTextByType_document(notificationType, documentName);
 
           //Если есть email  у пользователя и есть текст, который мы хотим отправить, то отправляем письмо
           if (email && text) {
