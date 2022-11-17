@@ -1,6 +1,6 @@
 const pg = require("pg");
+const moment = require("moment");
 const constants = require("../../config/constants");
-
 let transporter = null;
 let pgClient = null;
 
@@ -56,7 +56,7 @@ function sendMail(receiver, text = null, certificate = null) {
     {
       from: "zikdogovory@zik.kz",
       to: receiver,
-      subject: "[Новые события на портале ZiK-Договора]",
+      subject: "Новые события на портале ZiK-Договора",
       text: text ? text : "Есть непрочитанные элементы в вашем аккаунте.",
     },
     function (err, info) {
@@ -89,31 +89,41 @@ function listenToDBAndSendEmail(connectionString, certificate) {
 }
 
 function getEmail(userId) {
-  const query = `SELECT email FROM users WHERE id = ${userId}`;
+  const query = `
+  SELECT email FROM users WHERE id = ${userId}`;
   return new Promise(function (resolve, reject) {
     pgClient.query(query, (err, result) => {
       if (err) {
         console.log("document notification: error head reply pg query:", err);
         reject(err);
       }
-      console.log("email received");
       return resolve(result.rows[0].email);
     });
   });
 }
 
-function getDocumentName(documentId) {
-  const query = `SELECT title FROM documents WHERE id = ${documentId}`;
+function getDocument(documentId) {
+  const query = `
+  SELECT 
+    doc.title, doc.date_created,doc_routes.name as route_name 
+  FROM 
+    documents as doc LEFT JOIN document_routes as doc_routes ON doc.route_id=doc_routes.id 
+  WHERE 
+    doc.id = ${documentId}`;
   return new Promise(function (resolve, reject) {
     pgClient.query(query, (err, result) => {
       if (err) {
         console.log("document notification: error head reply pg query:", err);
         reject(err);
       }
-      console.log("document name received");
-      return resolve(result.rows[0].title);
+      return resolve(result.rows[0]);
     });
   });
+}
+
+function docTextParse(document) {
+  const dateCreated = moment(document.date_created).format("YYYY-MM-DD HH:mm");
+  return `${document.title} от ${dateCreated}, тип ${document.route_name}`;
 }
 
 //TODO: Необходимо переделать хранимки и более строго отслеживать, что именно произошло. То надо в любой момент понимать в каком разделе документ находится сейчас
@@ -121,17 +131,18 @@ function getDocumentName(documentId) {
  * @description Функция возвращает сообщение согласно типу поступившего апдейта документа
  * @returns Текст нотификации
  */
-function getTextByType_document(type, documentName) {
-  let result = `${documentName} - требует вашего решения`;
+function getTextByType_document(type, document) {
+  const docText = docTextParse(document);
+  let result = `${docText} - требует вашего решения`;
   switch (type) {
     case 1:
-      result = `${documentName} - утвержден и находится в разделе "Согласованные"`;
+      result = `${docText} - утвержден и находится в разделе "Согласованные"`;
       break;
     case 3:
-      result = `${documentName} - отклонен и находится в разделе "Отклоненные"`;
+      result = `${docText} - отклонен и находится в разделе "Отклоненные"`;
       break;
     case 4:
-      result = `${documentName} - необходима доработка по документу. Он находится в разделе "На доработке"`;
+      result = `${docText} - необходима доработка по документу. Он находится в разделе "На доработке"`;
       break;
   }
   return result;
@@ -140,15 +151,16 @@ function getTextByType_document(type, documentName) {
  * @description Функция возвращает сообщение согласно типу поступившего апдейта поручения
  * @returns Текст нотификации
  */
-function getTextByType_documentTask(type, documentName) {
+function getTextByType_documentTask(type, document) {
+  let docText = docTextParse(document);
   //TODO: Разобраться почему не передается в document_task_update type=2. Либо просто переделать хранимку после введения миграций
-  let result = `Поручение по документу ${documentName} выполнено`;
+  let result = `Поручение по документу ${docText} выполнено`;
   switch (type) {
     case 1:
-      result = `Вами получено новое поручение по документу ${documentName}`;
+      result = `Вами получено новое поручение по документу ${docText}`;
       break;
     case 2:
-      result = `Поручение по документу ${documentName} выполнено`;
+      result = `Поручение по документу ${docText} выполнено`;
       break;
   }
   return result;
@@ -167,13 +179,12 @@ function documentNotification(dbPayload) {
     (async () => {
       //то мы ассинхронно узнаем его мыло и имя документа на уведомление и дожидаемся всей информации
       const emailPromise = getEmail(userId);
-      const documentNamePromise = getDocumentName(documentId);
+      const documentNamePromise = getDocument(documentId);
       Promise.all([emailPromise, documentNamePromise])
         .then((values) => {
           const email = values[0];
-          const documentName = values[1];
-          const text = getTextByType_document(notificationType, documentName);
-
+          const document = values[1];
+          const text = getTextByType_document(notificationType, document);
           //Если есть email  у пользователя и есть текст, который мы хотим отправить, то отправляем письмо
           if (email && text) {
             sendMail(email, text);
@@ -184,8 +195,14 @@ function documentNotification(dbPayload) {
   }
 }
 
-function getDocumentNameByTaskId(taskId) {
-  const query = `SELECT title FROM documents WHERE id = (SELECT document_id FROM document_tasks WHERE id=${taskId}) `;
+function getDocumentByTaskId(taskId) {
+  const query = `
+  SELECT 
+    doc.title, doc.date_created,doc_routes.name as route_name 
+  FROM 
+    documents as doc LEFT JOIN document_routes as doc_routes ON doc.route_id=doc_routes.id 
+  WHERE 
+    doc.id = (SELECT document_id FROM document_tasks WHERE id=${taskId}) `;
   return new Promise(function (resolve, reject) {
     pgClient.query(query, (err, result) => {
       if (err) {
@@ -196,7 +213,7 @@ function getDocumentNameByTaskId(taskId) {
         reject(err);
       }
       console.log("document name received");
-      return resolve(result.rows[0].title);
+      return resolve(result.rows[0]);
     });
   });
 }
@@ -214,16 +231,12 @@ function documentTaskNotification(dbPayload) {
     (async () => {
       //то мы ассинхронно узнаем его мыло и имя документа на уведомление и дожидаемся всей информации
       const emailPromise = getEmail(userId);
-      const documentNamePromise = getDocumentNameByTaskId(taskId);
+      const documentNamePromise = getDocumentByTaskId(taskId);
       Promise.all([emailPromise, documentNamePromise])
         .then((values) => {
           const email = values[0];
-          const documentName = values[1];
-          const text = getTextByType_documentTask(
-            notificationType,
-            documentName
-          );
-
+          const document = values[1];
+          const text = getTextByType_documentTask(notificationType, document);
           //Если есть email  у пользователя и есть текст, который мы хотим отправить, то отправляем письмо
           if (email && text) {
             sendMail(email, text);
