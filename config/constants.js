@@ -2,7 +2,6 @@ const fs = require("fs");
 const path = require("path");
 const ini = require("ini");
 const process = require("process");
-//console.log(path.dirname(process.execPath));
 let config = ini.parse(
   fs.readFileSync(path.dirname(process.execPath) + "\\sd-config.ini", "utf-8")
 );
@@ -14,9 +13,7 @@ fs.close;
 
 const constants = {
   debug: false,
-  isSendEmail: config.HardSettings.isSendEmail
-    ? config.HardSettings.isSendEmail
-    : 1,
+  isSendEmail: config.HardSettings.isSendEmail === "0" ? 0 : 1,
   port: 8445,
   host: config.HardSettings.Host,
   database: {

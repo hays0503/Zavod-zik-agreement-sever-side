@@ -11,8 +11,7 @@ const { sendMail } = require("./emailNotification.js");
  */
 function getTextByType_documentTask(type, document) {
   let docText = docTextParse(document);
-  //TODO: Разобраться почему не передается в document_task_update type=2. Либо просто переделать хранимку после введения миграций
-  let result = `Поручение по документу ${docText} выполнено`;
+  let result = `Пришел апдейт по поручению ${docText}`;
   switch (type) {
     case 1:
       result = `Вами получено новое поручение по документу ${docText}`;
