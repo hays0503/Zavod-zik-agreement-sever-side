@@ -50,10 +50,8 @@ const { ApolloServer } = require("apollo-server-express");
 // SSL
 const certPath1 = path.join(__dirname, "./SSL/key.crt"); //ura
 const privateKey = fs.readFileSync(certPath1);
-const certPath3 = path.join(__dirname, "./SSL/EXCHANGE.cer");
 const certPath2 = path.join(__dirname, "./SSL/cert.crt");
 const certificate = fs.readFileSync(certPath2);
-const certificateForMail = fs.readFileSync(certPath3);
 // my
 const client = require("./config/pgConfig");
 //guard cfg
@@ -88,13 +86,9 @@ console.log(constants);
 let uploadFolderPath = path.dirname(process.execPath) + "\\uploads";
 console.log("Upload folder:", uploadFolderPath);
 
-//TODO: Добавить еще один уровень абстракции, разделив реализацию отправки email сообщений с непосредственно триггером на отправку сообщения
-//mail transport
-const {
-  listenToDBAndSendEmail,
-} = require("./src/notificaton/emailNotification");
-//email notifications
-listenToDBAndSendEmail(connectionString, certificateForMail);
+//Слушает БД и отсылает нотификацию при необходимости
+const { listenToDBAndSendEmail } = require("./src/notificaton/notification");
+listenToDBAndSendEmail(connectionString);
 
 // настройка express
 app.use(compression());
