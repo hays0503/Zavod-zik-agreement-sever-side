@@ -514,8 +514,9 @@ const resolvers = {
       );
 
       const number = args.mitwork_number ? args.mitwork_number : "NULL";
+
       const SQL = `UPDATE documents SET 
-				mitwork_number=${number},
+				mitwork_number='${number}',
 				mitwork_data='${now(args.mitwork_data)}' WHERE id=${args.ID};`;
 
       console.log(
