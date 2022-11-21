@@ -187,13 +187,14 @@ app.post("/api/tasks_files_is_add_to_document", async (req, res, next) => {
   res.json({ result: result.rows });
 });
 
-//При вызове отправляет сообщение на шлюх для программы Умарова
+//При вызове отправляет сообщение на шлюз для программы Умарова
 app.post("/api/notifications", (req, res, next) => {
-  let temp = { type: "notification" };
-  wss.clients.forEach(async function each(ws) {
-    ws.send(JSON.stringify(temp));
-  });
-  console.log("notification arrived");
+  res.json({ result: "NOT WORKING" });
+  // let temp = { type: "notification" };
+  // wss.clients.forEach(async function each(ws) {
+  //   ws.send(JSON.stringify(temp));
+  // });
+  // console.log("notification arrived");
 });
 
 let tableData;

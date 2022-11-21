@@ -5,10 +5,11 @@ const certPath3 = path.join(__dirname, "../../../SSL/EXCHANGE.cer");
 const nodemailer = require("nodemailer");
 const certificateForMail = fs.readFileSync(certPath3);
 
-const transporter = constructTransporter(certificateForMail);
+const transporter = constructTransporter();
 
 //Создает подключение к email серверу для отправки сообщений
-function constructTransporter(certificate) {
+function constructTransporter() {
+  console.log("transporter constructed");
   //mail transport
   const transporter = nodemailer.createTransport({
     host: "EXCHANGE.zik.loc",
@@ -18,7 +19,7 @@ function constructTransporter(certificate) {
       rejectUnauthorized: false,
       maxVersion: "TLSv1.3",
       minVersion: "TLSv1",
-      ca: [certificate],
+      ca: [certificateForMail],
     },
     auth: {
       user: "zikdogovory",
