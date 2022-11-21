@@ -42,11 +42,13 @@ const resolvers = {
       return new Date(ast.value);
     },
   }),
+
   Test: {
     async test1(parent) {
       return { one: 1, two: 2 };
     },
   },
+
   Test1: {
     test2(parent) {
       const authorLoader = new DataLoader((keys) => {
@@ -59,6 +61,7 @@ const resolvers = {
       return authorLoader.load(parent.one);
     },
   },
+
   Query: {
     test: async (parent, args, context) => {
       return [
@@ -347,11 +350,14 @@ const resolvers = {
       return res.rows;
     },
 
-    task_files_in_id: async (parent, args) => {
-      console.log(args.task_files_in_id.global.id.length);
-      if (args.task_files_in_id.global.id.length == 0) {
-        return null;
-      }
+		task_files_in_id: async (parent, args) => {
+			if (args.task_files_in_id.global.id === null) {
+				return null;
+			}
+
+			if (args.task_files_in_id.global.id.length === 0) {
+				return null;
+			}
 
       let sql = `
             (
@@ -563,16 +569,15 @@ const resolvers = {
       );
       const user = res.rows.length !== 0 ? res.rows[0] : null;
 
-      //if (await bcryptjs.compare(mytmp.pwd1, user.password)) {
-      const password2 =
-        mytmp.pwd1 === "" ? "" : await bcryptjs.hash(mytmp.pwd1, 10);
-      await client.query(
-        `update users set password = '${password2}' where username = '${mytmp.username}'`
-      );
-      //}
-      //else {
-      //throw new Error('Пароли не совпадают!');};
-    },
+			const password2 =
+				mytmp.pwd1 === "" ? "" : await bcryptjs.hash(mytmp.pwd1, 10);
+			await client.query(
+				`update users set password = '${password2}' where username = '${mytmp.username}'`
+			);
+			//}
+			//else {
+			//throw new Error('Пароли не совпадают!');};
+		},
 
     insertDepartmentDictionary: async (parent, args) => {
       await client.query(
@@ -602,169 +607,163 @@ const resolvers = {
       return { type: "success", message: "Успешно удалено" };
     },
 
-    insertPosition: async (parent, args) => {
-      await client.query(
-        `SELECT * FROM admin_document_position_insert('${JSON.stringify(
-          args.positions
-        )}')`
-      );
-      publish("positions", client);
-      return { type: "success", message: "Успешно создано" };
-    },
-    updatePosition: async (parent, args) => {
-      await client.query(
-        `SELECT * FROM admin_document_position_update('${JSON.stringify(
-          args.positions
-        )}')`
-      );
-      publish("positions", client);
-      return { type: "success", message: "Успешно изменено" };
-    },
-    deletePosition: async (parent, args) => {
-      await client.query(
-        `SELECT * FROM admin_document_position_delete('${JSON.stringify(
-          args.positions
-        )}')`
-      );
-      publish("positions", client);
-      return { type: "success", message: "Успешно удалено" };
-    },
-    // -----Documents Tasks -------
-    insertDocumentTasks: async (parent, args) => {
-      console.log(
-        `${picColor.BGyellow}${picColor.black}%s${picColor.reset}`,
-        `(insertDocumentTasks)`
-      );
-      await client.query(
-        `SELECT * FROM document_tasks_insert('${JSON.stringify(
-          args.document_tasks
-        )}')`
-      );
-      console.log(
-        `Мутация: ${picColor.BGyellow}${
-          picColor.black
-        }Создание нового поручение ${picColor.reset} => ${JSON.stringify(
-          args.document_tasks
-        )}`
-      );
-      publish("document_tasks", client);
-      return { type: "success", message: "Успешно создано" };
-    },
-    updateDocumentTasks: async (parent, args) => {
-      await client.query(
-        `SELECT * FROM document_tasks_update('${JSON.stringify(
-          args.document_tasks
-        )}')`
-      );
-      publish("document_tasks", client);
-      return { type: "success", message: "Успешно создано" };
-    },
-    // -----Documents mutatuions-----
-    insertDocument: async (parent, args) => {
-      await client
-        .query(
-          `SELECT * FROM document_insert('${JSON.stringify(args.document)}')`
-        )
-        .catch((e) => console.log(e));
-      publish("documents", client);
-      publish("document_logs", client);
-      return { type: "success", message: "Успешно создано" };
-    },
-    updateDocument: async (parent, args) => {
-      console.log(
-        `${picColor.BGyellow}${picColor.black}%s${picColor.reset}`,
-        `(updateDocument)`
-      );
-      console.log(
-        `SELECT * FROM document_update('${JSON.stringify(args.document)}')`
-      );
-      await client.query(
-        `SELECT * FROM document_update('${JSON.stringify(args.document)}')`
-      );
-      publish("documents", client);
-      publish("document_logs", client);
-      return { type: "success", message: "Документ изменен" };
-    },
-    deleteDocument: async (parent, args) => {
-      await client.query(
-        `SELECT * FROM document_delete('${JSON.stringify(args.document)}')`
-      );
-      publish("documents", client);
-      return { type: "success", message: "Успешно удалено!" };
-    },
-    setIsReadTrue: async (parent, args) => {
-      await client.query(
-        `SELECT * FROM document_set_is_read_true('${JSON.stringify(
-          args.document
-        )}')`
-      );
-      publish("documents", client);
-      publish("document_logs", client);
-      return {};
-    },
-    setTaskIsReadTrue: async (parent, args) => {
-      await client.query(
-        `SELECT * FROM  document_tasks_set_is_read_true('${JSON.stringify(
-          args.task
-        )}')`
-      );
-      publish("tasks", client);
-      publish("document_tasks_logs", client);
-      return {};
-    },
-    // -----Comments mutatuions-----
-    insertComment: async (parent, args) => {
-      await client.query(
-        `SELECT * FROM document_comment_insert('${JSON.stringify(
-          args.comment
-        )}')`
-      );
-      publish("document_comments", client);
-      return { type: "success", message: "Успешно создано" };
-    },
-    updateComment: async (parent, args) => {
-      //console.log(args)
-      await client.query(
-        `SELECT * FROM document_update('${JSON.stringify(args.comment)}')`
-      );
-      publish("document_comments", client);
-      return { type: "success", message: "Документ изменен" };
-    },
-    deleteComment: async (parent, args) => {
-      await client.query(
-        `SELECT * FROM document_delete('${JSON.stringify(args.comment)}')`
-      );
-      publish("document_comments", client);
-      return { type: "success", message: "Успешно удалено!" };
-    },
-    // -----Signatures mutatuions-----
-    insertSignature: async (parent, args) => {
-      await client.query(
-        `SELECT * FROM document_signature_insert('${JSON.stringify(
-          args.signature
-        )}')`
-      );
-      publish("document_signatures", client);
-      return { type: "success", message: "Успешно создано" };
-    },
-    deleteSignature: async (parent, args) => {
-      await client.query(
-        `SELECT * FROM document_signature_delete(('${JSON.stringify(
-          args.signature
-        )}')`
-      );
-      publish("document_signatures", client);
-      return { type: "success", message: "Успешно изменено" };
-    },
-    // -----Files mutatuions-----
-    deleteFile: async (parent, args) => {
-      await client.query(
-        `SELECT * FROM files_delete('${JSON.stringify(args.document_files)}')`
-      );
-      publish("documents", client);
-      publish("files", client);
-      return { type: "success", message: "Успешно удалено" };
-    },
+		insertPosition: async (parent, args) => {
+			await client.query(
+				`SELECT * FROM admin_document_position_insert('${JSON.stringify(
+					args.positions
+				)}')`
+			);
+			publish("positions", client);
+			return { type: "success", message: "Успешно создано" };
+		},
+		updatePosition: async (parent, args) => {
+			await client.query(
+				`SELECT * FROM admin_document_position_update('${JSON.stringify(
+					args.positions
+				)}')`
+			);
+			publish("positions", client);
+			return { type: "success", message: "Успешно изменено" };
+		},
+		deletePosition: async (parent, args) => {
+			await client.query(
+				`SELECT * FROM admin_document_position_delete('${JSON.stringify(
+					args.positions
+				)}')`
+			);
+			publish("positions", client);
+			return { type: "success", message: "Успешно удалено" };
+		},
+		// -----Documents Tasks -------
+		insertDocumentTasks: async (parent, args) => {
+			console.log(
+				`${picColor.BGyellow}${picColor.black}%s${picColor.reset}`,
+				`(insertDocumentTasks)`
+			);
+			await client.query(
+				`SELECT * FROM document_tasks_insert('${JSON.stringify(
+					args.document_tasks
+				)}')`
+			);
+			console.log(
+				`Мутация: ${picColor.BGyellow}${
+					picColor.black
+				}Создание нового поручение ${picColor.reset} => ${JSON.stringify(
+					args.document_tasks
+				)}`
+			);
+			publish("document_tasks", client);
+			return { type: "success", message: "Успешно создано" };
+		},
+		updateDocumentTasks: async (parent, args) => {
+			await client.query(
+				`SELECT * FROM document_tasks_update('${JSON.stringify(
+					args.document_tasks
+				)}')`
+			);
+			publish("document_tasks", client);
+			return { type: "success", message: "Успешно создано" };
+		},
+		// -----Documents mutatuions-----
+		insertDocument: async (parent, args) => {
+			console.log(JSON.stringify(args.document));
+			await client
+				.query(
+					`SELECT * FROM document_insert('${JSON.stringify(args.document)}')`
+				)
+				.catch((e) => console.log(e));
+			publish("documents", client);
+			publish("document_logs", client);
+			return { type: "success", message: "Успешно создано" };
+		},
+		updateDocument: async (parent, args) => {
+			await client.query(
+				`SELECT * FROM document_update('${JSON.stringify(args.document)}')`
+			);
+			publish("documents", client);
+			publish("document_logs", client);
+			return { type: "success", message: "Документ изменен" };
+		},
+		deleteDocument: async (parent, args) => {
+			await client.query(
+				`SELECT * FROM document_delete('${JSON.stringify(args.document)}')`
+			);
+			publish("documents", client);
+			return { type: "success", message: "Успешно удалено!" };
+		},
+		setIsReadTrue: async (parent, args) => {
+			await client.query(
+				`SELECT * FROM document_set_is_read_true('${JSON.stringify(
+					args.document
+				)}')`
+			);
+			publish("documents", client);
+			publish("document_logs", client);
+			return {};
+		},
+		setTaskIsReadTrue: async (parent, args) => {
+			await client.query(
+				`SELECT * FROM  document_tasks_set_is_read_true('${JSON.stringify(
+					args.task
+				)}')`
+			);
+			publish("tasks", client);
+			publish("document_tasks_logs", client);
+			return {};
+		},
+		// -----Comments mutatuions-----
+		insertComment: async (parent, args) => {
+			await client.query(
+				`SELECT * FROM document_comment_insert('${JSON.stringify(
+					args.comment
+				)}')`
+			);
+			publish("document_comments", client);
+			return { type: "success", message: "Успешно создано" };
+		},
+		updateComment: async (parent, args) => {
+			//console.log(args)
+			await client.query(
+				`SELECT * FROM document_update('${JSON.stringify(args.comment)}')`
+			);
+			publish("document_comments", client);
+			return { type: "success", message: "Документ изменен" };
+		},
+		deleteComment: async (parent, args) => {
+			await client.query(
+				`SELECT * FROM document_delete('${JSON.stringify(args.comment)}')`
+			);
+			publish("document_comments", client);
+			return { type: "success", message: "Успешно удалено!" };
+		},
+		// -----Signatures mutatuions-----
+		insertSignature: async (parent, args) => {
+			await client.query(
+				`SELECT * FROM document_signature_insert('${JSON.stringify(
+					args.signature
+				)}')`
+			);
+			publish("document_signatures", client);
+			return { type: "success", message: "Успешно создано" };
+		},
+		deleteSignature: async (parent, args) => {
+			await client.query(
+				`SELECT * FROM document_signature_delete(('${JSON.stringify(
+					args.signature
+				)}')`
+			);
+			publish("document_signatures", client);
+			return { type: "success", message: "Успешно изменено" };
+		},
+		// -----Files mutatuions-----
+		deleteFile: async (parent, args) => {
+			await client.query(
+				`SELECT * FROM files_delete('${JSON.stringify(args.document_files)}')`
+			);
+			publish("documents", client);
+			publish("files", client);
+			return { type: "success", message: "Успешно удалено" };
+		},
 
     setAgreement: async (parent, args) => {
       // console.log("ARGS", JSON.stringify(args));
