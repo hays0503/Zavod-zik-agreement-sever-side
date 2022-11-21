@@ -24,10 +24,10 @@ function constructTransporter() {
       minVersion: "TLSv1",
       ca: [certificateForMail],
     },
-    auth: {
-      user: "zikdogovory",
-      pass: "123456Aa+",
-    },
+    // auth: {
+    //   user: "zikdogovory",
+    //   pass: "123456Aa+",
+    // },
   });
 
   return transporter;
