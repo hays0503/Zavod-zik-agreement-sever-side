@@ -351,7 +351,11 @@ const resolvers = {
 		},
 
 		task_files_in_id: async (parent, args) => {
-			if (args.task_files_in_id.global.id.length == 0) {
+			if (args.task_files_in_id.global.id === null) {
+				return null;
+			}
+
+			if (args.task_files_in_id.global.id.length === 0) {
 				return null;
 			}
 
