@@ -350,11 +350,14 @@ const resolvers = {
       return res.rows;
     },
 
-    task_files_in_id: async (parent, args) => {
-      console.log(args.task_files_in_id.global.id.length);
-      if (args.task_files_in_id.global.id.length == 0) {
-        return null;
-      }
+		task_files_in_id: async (parent, args) => {
+			if (args.task_files_in_id.global.id === null) {
+				return null;
+			}
+
+			if (args.task_files_in_id.global.id.length === 0) {
+				return null;
+			}
 
       let sql = `
             (
