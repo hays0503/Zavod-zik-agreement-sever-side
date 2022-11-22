@@ -50,21 +50,21 @@ let typeDefs = gql`
     expire: DateTime
   }
   type Test {
-    one: Int
-    two: Int
+    one: Bigint
+    two: Bigint
     test1: Test1
   }
   type Test1 {
-    one: Int
-    two: Int
+    one: Bigint
+    two: Bigint
     test2: Test2
   }
   type Test2 {
-    one: Int
-    two: Int
+    one: Bigint
+    two: Bigint
   }
   type Test3 {
-    id: Bigint
+    ID: Int
     routes: String
   }
 
@@ -103,13 +103,13 @@ let typeDefs = gql`
     document_id: Bigint
     is_read: Boolean
     user_id: Bigint
-    type: Int
+    type: Bigint
   }
   type DocumentTasksLogs {
     id: ID
     task_id: Bigint
     is_read: Boolean
-    type: Int
+    type: Bigint
     user_id: Bigint
   }
   type Documents {
@@ -215,7 +215,7 @@ let typeDefs = gql`
   type DataOne {
     id: ID
     document_id: Bigint
-    price: Int
+    price: Bigint
     supllier: String
     subject: String
   }
@@ -300,7 +300,7 @@ let typeDefs = gql`
     document_logs(document_logs: JSON): [DocumentLogs]
     document_tasks_logs(document_tasks_logs: JSON): [DocumentTasksLogs]
     document_tasks_files(document_tasks_files: JSON): [DocumentTasksFiles]
-    task_files(id: Bigint): [Files]
+    task_files(ID: Int): [Files]
     date_one(data_one: JSON): [DataOne]
     data_agreement_list(data_agreement_list: JSON): [DataAgreementList]
     data_agreement_list_production(

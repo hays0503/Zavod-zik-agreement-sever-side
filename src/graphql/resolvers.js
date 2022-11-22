@@ -652,6 +652,7 @@ const resolvers = {
 					args.document_tasks
 				)}`
 			);
+
 			publish("document_tasks", client);
 			return { type: "success", message: "Успешно создано" };
 		},
