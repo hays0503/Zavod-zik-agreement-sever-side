@@ -1,7 +1,7 @@
 const tables = {
 	users: {
 		fields: {
-			id: "bigint",
+			id: "Int",
 			username: "character varying",
 			password: "character varying",
 			admin: "boolean",
@@ -31,7 +31,7 @@ const tables = {
 	},
 	positions: {
 		fields: {
-			id: "bigint",
+			id: "Int",
 			name: "character varying",
 			accesses: "json",
 			is_boss: "boolean",
@@ -51,7 +51,7 @@ const tables = {
 	},
 	user_roles: {
 		fields: {
-			id: "bigint",
+			id: "Int",
 			name: "character varying",
 		},
 		where: {
@@ -79,11 +79,11 @@ const tables = {
 	},
 	document_logs: {
 		fields: {
-			id: "bigint",
+			id: "Int",
 			document_id: "bigint",
 			is_read: "boolean",
 			user_id: "bigint",
-			type: "int",
+			type: "Bigint",
 		},
 		where: {
 			id: "id $*$",
@@ -95,11 +95,11 @@ const tables = {
 	},
 	document_tasks_logs: {
 		fields: {
-			id: "bigint",
+			id: "Int",
 			task_id: "bigint",
 			is_read: "boolean",
 			user_id: "bigint",
-			type: "int",
+			type: "Bigint",
 		},
 		where: {
 			id: "id $*$",
@@ -111,7 +111,7 @@ const tables = {
 	},
 	documents: {
 		fields: {
-			id: "bigint",
+			id: "Int",
 			title: "character varying",
 			reason: "character varying",
 			subject: "character varying",
@@ -161,7 +161,7 @@ const tables = {
 			date_modified: "date_modified $*$",
 			is_read: "is_read $*$",
 			positions:
-				"exists (select id from (select id, json_array_elements(route_data) as elem from documents) as docelem where(elem->> 'positionId'):: int = any(array[$*$]))",
+				"exists (select id from (select id, json_array_elements(route_data) as elem from documents) as docelem where(elem->> 'positionId'):: Int = any(array[$*$]))",
 			approved_by_me:
 				"id in(select document_id from document_signatures where user_id=$*$)",
 			documents_for_receiver:
@@ -172,7 +172,7 @@ const tables = {
 	},
 	department_dictionary: {
 		fields: {
-			id: "bigint",
+			id: "Int",
 			department_name: "character varying",
 		},
 		where: {
@@ -202,7 +202,7 @@ const tables = {
 	//"documents_for_receiver":"id in(select document_id from document_tasks where user_id_receiver=$*$) and exists(select id from document_tasks where user_id_receiver=$*$)"
 	document_tasks: {
 		fields: {
-			id: "bigint",
+			id: "Int",
 			document_id: "bigint",
 			status: "bigint",
 			task_statuses:
@@ -237,7 +237,7 @@ const tables = {
 	},
 	data_custom: {
 		fields: {
-			id: "bigint",
+			id: "Int",
 			document_id: "bigint",
 			subject: "character varying",
 			remark: "character varying",
@@ -251,7 +251,7 @@ const tables = {
 	},
 	data_agreement_list_production: {
 		fields: {
-			id: "bigint",
+			id: "Int",
 			document_id: "bigint",
 			subject: "character varying",
 			price: "bigint",
@@ -273,7 +273,7 @@ const tables = {
 	},
 	data_one: {
 		fields: {
-			id: "bigint",
+			id: "Int",
 			document_id: "bigint",
 			price: "bigint",
 			supllier: "bigint",
@@ -289,7 +289,7 @@ const tables = {
 	},
 	data_agreement_list: {
 		fields: {
-			id: "bigint",
+			id: "Int",
 			document_id: "bigint",
 			price: "bigint",
 			subject: "character varying",
@@ -313,7 +313,7 @@ const tables = {
 	},
 	data_agreement_list_internal_needs: {
 		fields: {
-			id: "bigint",
+			id: "Int",
 			document_id: "bigint",
 			subject: "character varying",
 			price: "bigint",
@@ -335,7 +335,7 @@ const tables = {
 	},
 	document_routes: {
 		fields: {
-			id: "bigint",
+			id: "Int",
 			name: "character varying",
 			routes: "json",
 			status_in_process: "bigint",
@@ -350,7 +350,7 @@ const tables = {
 	},
 	document_statuses: {
 		fields: {
-			id: "bigint",
+			id: "Int",
 			name: "character varying",
 		},
 		where: {
@@ -360,7 +360,7 @@ const tables = {
 	},
 	task_statuses: {
 		fields: {
-			id: "bigint",
+			id: "Int",
 			name: "character varying",
 		},
 		where: {
@@ -370,7 +370,7 @@ const tables = {
 	},
 	forms: {
 		fields: {
-			id: "bigint",
+			id: "Int",
 			name: "character varying",
 			route: "bigint",
 			settings: "json",
@@ -391,7 +391,7 @@ const tables = {
 	},
 	document_comments: {
 		fields: {
-			id: "bigint",
+			id: "Int",
 			document_id: "bigint",
 			comment: "character varying",
 			user_id: "bigint",
@@ -407,7 +407,7 @@ const tables = {
 	},
 	document_signatures: {
 		fields: {
-			id: "bigint",
+			id: "Int",
 			document_id: "bigint",
 			user_id: "bigint",
 			username: "character varying",
