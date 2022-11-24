@@ -5,7 +5,7 @@ let wb = new xl.Workbook();
 module.exports = {
 
     generateXlsx: async (res, client, tableData) => {
-        console.log('tableData-------', tableData.length)
+        //console.log('tableData-------', tableData.length)
         let ws = wb.addWorksheet('Sheet 1');
 
         let style = wb.createStyle({
