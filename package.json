@@ -66,7 +66,7 @@
   "scripts": {
     "build": "(if exist G:\\projects\\agreement_git\\srv\build rmdir G:\\projects\\agreement_git\\srv\\build /s /q)  && cd G:\\projects\\agreement_git\\client && npm run build && xcopy build\\*.* G:\\projects\\agreement_git\\srv\\build\\ /E /K /D /H /Y && cd G:\\projects\\agreement_git\\srv && npm start",
     "start": "nodemon server.js",
-    "start-build": "nodemon powershell .\\AutoBuild.ps1",
+    "start-build": "nodemon powershell ./AutoBuild.ps1",
     "build-exe": "pkg . --targets node14-win-x64",
     "dbRestore": "powershell .\\dumpDatabase\\dropBase.ps1 && powershell .\\dumpDatabase\\createdb.ps1 && powershell .\\dumpDatabase\\restore.ps1",
     "dbDump": "powershell .\\dumpDatabase\\dump.ps1"
