@@ -278,6 +278,7 @@ const tables = {
       price: "bigint",
       supllier: "bigint",
       subject: "character varying",
+      currency: "character varying",
     },
     where: {
       id: "id $*$",
@@ -285,6 +286,7 @@ const tables = {
       price: "price $*$",
       supllier: "supllier $*$",
       subject: "subject $*$",
+      currency: "currenci $*$",
     },
   },
   data_agreement_list: {
