@@ -148,7 +148,6 @@ const tables = {
 			date_created: "timestamp without time zone",
 			date_modified: "timestamp without time zone",
 			step: "bigint",
-
 		},
 		where: {
 			id: "id $*$",
@@ -241,6 +240,7 @@ const tables = {
 			document_id: "bigint",
 			subject: "character varying",
 			remark: "character varying",
+			custom_area: "json",
 		},
 		where: {
 			id: "id $*$",

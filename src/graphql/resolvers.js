@@ -162,11 +162,17 @@ const resolvers = {
 			return res.rows;
 		},
 		documents: async (parent, args, context) => {
+			console.log(
+				`${picColor.BGgreen}${picColor.black}%s${picColor.reset}`,
+				`(documents)`,
+				`Запрос: На просмотр документа`
+			);
 			let [dbQuery] = queryParseJson({
 				query: context.body.query,
 				variables: args ? args : context.body.variables,
 				tables,
 			});
+			console.log(dbQuery.documents, "\n");
 			const res = await client.query(dbQuery.documents);
 			return res.rows;
 		},
@@ -233,8 +239,6 @@ const resolvers = {
 		},
 
 		document_comments: async (parent, args, context) => {
-			//console.log('query comments args', args)
-			//console.log('query comments conxtext variables', context.body.variables)
 			let [dbQuery] = queryParseJson({
 				query: context.body.query,
 				variables: args ? args : context.body.variables,
