@@ -39,6 +39,7 @@ const tables = {
       is_user: "boolean",
     },
     where: {
+      //Только те позиции, на которых заведены пользователи
       id: "id $*$ AND id IN (SELECT (positions->>0)::bigint FROM users)",
       name: "username $*$",
       accesses: "accesses $*$",
