@@ -17,6 +17,7 @@ const { initializePassport } = require("./config/passportConfig");
 // DB session
 const pgSession = require("connect-pg-simple")(session);
 const sessionPool = require("pg").Pool;
+const base64ToArrayBuffer = require("./src/core/functions").base64ToArrayBuffer;
 
 const sessionConfig = {
 	store: new pgSession({
@@ -100,7 +101,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(methodOverride("_method"));
 //// пределы post запросов
-app.use(bodyParser.json({ limit: "50mb", extended: true }));
 app.use(
 	bodyParser.urlencoded({
 		limit: "50mb",
@@ -108,6 +108,8 @@ app.use(
 		parameterLimit: 50000,
 	})
 );
+app.use(bodyParser.json({ limit: "50mb", extended: true }));
+
 //// подгрузка favicon css js файлов
 app.use(favicon(__dirname + "/build/favicon.ico"));
 app.use("/static", express.static(path.join(__dirname, "build/static")));
@@ -127,37 +129,47 @@ function checkNotAuthenticated(req, res, next) {
 	next();
 }
 
+function ext(name) {
+	var m = name.match(/\.([^.]+)$/);
+	return m && m[1];
+}
+
 //file downloads from browser
 let filePgClient = new pg.Client(connectionString);
 filePgClient.connect();
 app.post("/api/files", async (req, res, next) => {
 	filePgClient.query(
-		`SELECT id, filename, data_file FROM document_files WHERE id = ${req.body.item}`,
+		`SELECT filename, data_file FROM document_files WHERE id = ${req.body.item}`,
 		async (err, result) => {
 			if (err) {
 				return console.error("error head reply pg query:", err);
 			}
 
-			const data = await convertAnyFileToPdf(result.rows[0].data_file);
-			const dataBase64 = `data:application/pdf;base64,${data.toString(
-				"base64"
-			)}`;
+			const extinction_file = ext(result.rows[0].filename);
 
-			let temp = {
-				filename: result.rows[0].filename,
-				type: "file_open",
-				data: dataBase64,
-			};
+			if (extinction_file == "pdf") {
+				console.log("Файл с расширением pdf ", result.rows[0].filename);
+				let temp = {
+					filename: result.rows[0].filename,
+					type: "file_open",
+					data: result.rows[0].data_file,
+				};
+				res.json({ result: temp });
+			} else {
+				const data = await convertAnyFileToPdf(result.rows[0].data_file);
+				const dataBase64 = `data:application/pdf;base64,${data.toString(
+					"base64"
+				)}`;
 
-			console.log("\nКонвертировал документ: ", temp.filename);
+				let temp = {
+					filename: result.rows[0].filename,
+					type: "file_open",
+					data: dataBase64,
+				};
 
-			//Попытка сделать просмотр рабочим 23.11.22
-			res.json({ result: temp });
-			//Это вообще работает ? 23.11.22
-			// sdServerWSConfig.connect.clients.forEach(async function each(ws) {
-			//   console.log("filename", result.rows[0].filename, req.body.user, ws.id);
-			//   if (req.body.user == ws.id) ws.send(JSON.stringify(temp));
-			// });
+				console.log("\nКонвертировал документ: ", temp.filename);
+				res.json({ result: temp });
+			}
 		}
 	);
 });
@@ -171,26 +183,30 @@ app.post("/api/tasks_files", async (req, res, next) => {
 				return console.error("error head reply pg query:", err);
 			}
 
-			const data = await convertAnyFileToPdf(result.rows[0].data_file);
-			const dataBase64 = `data:application/pdf;base64,${data.toString(
-				"base64"
-			)}`;
+			const extinction_file = ext(result.rows[0].filename);
 
-			let temp = {
-				filename: result.rows[0].filename,
-				type: "file_open",
-				data: dataBase64,
-			};
+			if (extinction_file == "pdf") {
+				let temp = {
+					filename: result.rows[0].filename,
+					type: "file_open",
+					data: result.rows[0].data_file,
+				};
+				res.json({ result: temp });
+			} else {
+				const data = await convertAnyFileToPdf(result.rows[0].data_file);
+				const dataBase64 = `data:application/pdf;base64,${data.toString(
+					"base64"
+				)}`;
 
-			console.log("\nКонвертировал документ: ", temp.filename);
+				let temp = {
+					filename: result.rows[0].filename,
+					type: "file_open",
+					data: dataBase64,
+				};
 
-			//Попытка сделать просмотр рабочим 23.11.22
-			res.json({ result: temp });
-			//Это вообще работает ? 23.11.22
-			// sdServerWSConfig.connect.clients.forEach(async function each(ws) {
-			//   console.log("filename", result.rows[0].filename, req.body.user, ws.id);
-			//   if (req.body.user == ws.id) ws.send(JSON.stringify(temp));
-			// });
+				console.log("\nКонвертировал документ: ", temp.filename);
+				res.json({ result: temp });
+			}
 		}
 	);
 });
@@ -305,21 +321,88 @@ app.post("/document-control/for-execution-inbox", function (req, res, next) {
 });
 /////////////////////////////////////////////////////////////////////////////
 app.post("/get-file", async (req, res) => {
-	const { writeFile } = require("fs");
-	const { promisify } = require("util");
-
 	let client = require("./config/pgConfig");
 	let id = req.body.id;
 	let result = await client.query(
-		`SELECT * FROM document_files WHERE id = ${id}`
+		`SELECT filename, data_file FROM document_files WHERE id = ${id}`
 	);
 	res.json({ result: result.rows[0] });
 });
 
-app.post("/get-tasks-file", async (req, res) => {
-	const { writeFile } = require("fs");
-	const { promisify } = require("util");
+app.post("/cdn/pdf.worker.min.js", async (req, res) => {
+	let fs = require("fs");
+	let stream = require("stream");
+	let script = fs.readFileSync("cdn.js", "utf8");
 
+	res.writeHead(200, {
+		"Content-Type": "application/javascript; charset=utf-8",
+	});
+	res.write(script);
+	res.end();
+	//res.body(cdn);
+});
+
+app.post("/download-get-file", async (req, res) => {
+	let stream = require("stream");
+	const client = require("./config/pgConfig");
+	let id = req.query.id;
+	const result = await client.query(
+		`SELECT filename, data_file FROM document_files WHERE id = ${id}`
+	);
+
+	const data = Buffer.from(
+		`${result.rows[0].data_file.substr(
+			result.rows[0].data_file.lastIndexOf(",") + 1
+		)}`,
+		"base64"
+	);
+
+	var readStream = new stream.PassThrough();
+	readStream.end(data);
+
+	console.log(`attachment; filename=${result?.rows[0].filename.toString()}`);
+	console.log(
+		`attachment; filename=${encodeURIComponent(
+			result?.rows[0].filename.toString()
+		)}`
+	);
+
+	res.writeHead(200, {
+		"Content-Type": "application/pdf",
+		"Content-Disposition": `attachment; filename*=utf8\"${encodeURIComponent(
+			result?.rows[0].filename.toString()
+		)}\"`,
+	});
+	readStream.pipe(res);
+});
+
+app.post("/download-get-tasks-file", async (req, res) => {
+	let stream = require("stream");
+	const client = require("./config/pgConfig");
+	let id = req.query.id;
+	let result = await client.query(
+		`SELECT filename, data_file FROM document_tasks_files WHERE id = ${id}`
+	);
+
+	const data = Buffer.from(
+		`${result.rows[0].data_file.substr(
+			result.rows[0].data_file.lastIndexOf(",") + 1
+		)}`,
+		"base64"
+	);
+
+	var readStream = new stream.PassThrough();
+	readStream.end(data);
+
+	res.writeHead(200, {
+		"Content-Type": "application/pdf",
+		"Content-Disposition": "attachment; filename=" + result?.rows[0].filename,
+	});
+
+	readStream.pipe(res);
+});
+
+app.post("/get-tasks-file", async (req, res) => {
 	let client = require("./config/pgConfig");
 	let id = req.body.id;
 	let result = await client.query(
